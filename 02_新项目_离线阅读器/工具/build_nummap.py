@@ -119,6 +119,13 @@ def extract(cat, names):
 def main():
     data = {"v": 1}
     total = 0
+    valid = None
+    pp = os.path.join(BASE, "前端", "proto", "data", "pages.json.gz")
+    if os.path.exists(pp):
+        with gzip.open(pp, "rt", encoding="utf-8") as f:
+            valid = {k[:-4] if k.endswith(".htm") else k for k in json.load(f)}
+        print("参照 pages.json：%d 页" % len(valid))
+
     for cat in ["SA", "MA", "DA", "AA", "MN", "DN", "SN", "AN", "Ud", "It"]:
         d = os.path.join(SRC, cat)
         if not os.path.isdir(d):
@@ -129,6 +136,14 @@ def main():
             if n.lower().endswith(".htm") and not n.endswith("_s.htm") and n.lower() != "index.htm"
         )
         mapping, used, dup = extract(cat, names)
+        if valid is not None:
+            dropped = 0
+            for scheme, bucket in mapping.items():
+                for key in [k for k, v in bucket.items() if v not in valid]:
+                    del bucket[key]
+                    dropped += 1
+            if dropped:
+                print("%-3s 丢弃 %d 条（页面未成功抽取）" % (cat, dropped))
         mapping = {k: v for k, v in mapping.items() if v}
         if not mapping:
             continue

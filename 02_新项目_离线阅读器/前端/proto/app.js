@@ -4,7 +4,7 @@
 
   const S = {
     toc: null, pages: null, pali: null, corpus: {}, notes: null, t2s: null,
-    num: null, books: {}, docs: {},
+    num: null, menu: null, books: {}, docs: {},
     lang: localStorage.getItem("agama_lang") || "trad",
     loaded: false,
   };
@@ -107,6 +107,7 @@
       S.t2s = await loadGz("data/t2s.json.gz").catch(() => null);
       if (S.t2s) initT2S(S.t2s);
       S.num = await loadGz("data/num.json.gz").catch(() => null);
+      S.menu = await loadGz("data/menu.json.gz").catch(() => null);
     } catch (err) {
       fatal("載入「" + stage + "」時出錯。", err && err.message ? err.message : String(err));
       return;
@@ -238,7 +239,7 @@
   }
 
   function viewLicense() {
-    app().innerHTML = topBar() + tr(
+    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a></div>' + tr(
       `<div class="cat license">
         <h1>內容授權與來源</h1>
         <p>本站經文、譯文、註釋、巴利原文、音頻與 PDF，均由<strong>莊春江</strong>老師翻譯、整理與著述，
@@ -261,7 +262,6 @@
         <p class="tip">本離線版由讀者自行製作，為非官方版本，與原作者及家屬無隸屬或背書關係。
            內容以原站為準。授權聲明的原始出處已隨程式存檔。</p>
       </div>`);
-    bindTop();
     document.title = "授權與來源 · 莊春江讀經站";
   }
 
@@ -269,7 +269,7 @@
   function topBar(opts) {
     const o = opts || {};
     const home = '<a href="#/">首 頁</a>';
-    const cat = o.cat ? '<a href="#/c/' + esc(o.cat) + '">目 錄</a>' : "";
+    const cat = o.cat ? (catMenu(o.cat) || '<a href="#/c/' + esc(o.cat) + '">目 錄</a>') : "";
     const back = '<a href="#/">回 首 頁</a>';
     const prev = o.prev ? '<a href="#/p/' + esc(o.prev) + '">« 上一經</a>' : "";
     const next = o.next ? '<a href="#/p/' + esc(o.next) + '">下一經 »</a>' : "";
@@ -287,6 +287,17 @@
         </form>
         <span class="update_time">${esc(o.time || "")}</span>
       </div>`;
+  }
+
+  /* 小部各集没有独立 index，原站用 JS 下拉菜单导航；这里用同样形式的菜单还原（悬停展开，点击进目录页） */
+  function catMenu(code) {
+    const items = S.menu && S.menu[code];
+    if (!items || !items.length) return "";
+    const links = items.map(([label, pid]) =>
+      '<a href="#/p/' + esc(pid) + '">' + esc(label) + "</a>").join("");
+    return '<span class="catmenu">' +
+      '<a href="#/c/' + esc(code) + '" class="catmenu-btn">目 錄 ▾</a>' +
+      '<div class="catmenu-list">' + links + "</div></span>";
   }
 
   /* 静态页导航：首頁 / 目錄 / 上一節 / 下一節 */
@@ -476,19 +487,23 @@
   function resolveNumJump(cat, scheme, raw) {
     const t = normNumKey(raw);
     if (!t) return null;
-    if (S.pages && S.pages[cat + "/" + t.toUpperCase()]) return cat + "/" + t.toUpperCase();
+    const ok = pid => pid && (!S.pages || !!S.pages[pid + ".htm"]);
+    const direct = cat + "/" + t.toUpperCase();
+    if (ok(direct)) return direct;
     const m = t.match(/^([A-Za-z]{2})(\d+(?:\.\d+)*)$/);
     if (m) {
       const hit = lookupNum(m[1].toUpperCase(), "tz", normNumKey(m[2]));
-      if (hit) return hit;
+      if (ok(hit)) return hit;
     }
-    return lookupNum(cat, scheme, t);
+    const hit2 = lookupNum(cat, scheme, t);
+    return ok(hit2) ? hit2 : null;
   }
 
   function viewCat(code) {
     const cat = S.toc.cats.find(c => c.id === code);
     if (!cat) return viewHome();
-    if (cat.page) {
+    const plain = (cat.page || "").replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
+    if (cat.page && plain.length > 40) {
       app().innerHTML = '<div class="orig">' + trCached("cat:" + code, cat.page) + "</div>";
       document.title = (cat.n || code) + " · 莊春江讀經站";
       // 栏目页表单：经号框直接跳转，检索框走本栏目全文搜索
@@ -516,7 +531,29 @@
       bindAnchors();
       return;
     }
-    app().innerHTML = '<div class="cat"><h1>' + esc(cat.n) + '</h1><p>此欄目無目錄頁</p></div>';
+    if ((S.menu && S.menu[code]) || (cat.items && cat.items.length)) {
+      renderCatList(code, cat);
+      return;
+    }
+    app().innerHTML = '<div class="cat"><h1>' + esc(cat.n || code) + '</h1><p>此欄目無目錄頁</p></div>';
+  }
+
+  /* 没有 index.htm 的小部集：按原站下拉菜单（或条目）生成列表页 */
+  function renderCatList(code, cat) {
+    const menu = S.menu && S.menu[code];
+    const items = menu && menu.length
+      ? menu
+      : (cat.items || []).map(it => {
+        const rec = S.pages && S.pages[it.p + ".htm"];
+        return [it.k || (rec ? rec[0] : "") || (it.p.split("/")[1] || ""), it.p];
+      });
+    const lis = items.map(([label, pid]) =>
+      '<li><a href="#/p/' + esc(pid) + '">' + esc(label) + "</a></li>").join("");
+    app().innerHTML = tr(
+      '<div class="cat catlist"><h1>' + esc(cat.n || code) + "</h1>" +
+      '<p class="tip">本集在原站沒有目錄頁，以下按原站下拉選單排列。</p>' +
+      "<ul>" + lis + "</ul></div>");
+    document.title = (cat.n || code) + " · 莊春江讀經站";
   }
 
   /* ---------------- 页面渲染 ---------------- */
