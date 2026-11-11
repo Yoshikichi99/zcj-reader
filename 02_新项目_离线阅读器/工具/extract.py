@@ -198,19 +198,38 @@ def clean_fragment(inner, page_rel):
 # ---------------- 原始字符串定位 ----------------
 
 def find_div_end(s, tag_start):
-    """从 <div ...> 的起始位置，按深度配对找到结束位置（返回结束偏移）。"""
+    """从 <div ...> 的起始位置，按深度配对找到结束位置（返回结束偏移）。
+
+    原站部分页面 div 不闭合（如 MA136：9 开 / 8 闭），深度永远回不到 0。
+    这时退回到「下一个结构边界」——南传区、對讀区或 body 结束——避免整块正文被判空。
+    """
     depth = 1
     pos = tag_start
     pat = re.compile(r"<(/?)div\b", re.I)
     while True:
         m = pat.search(s, pos)
         if not m:
-            return -1
+            return _div_end_fallback(s, tag_start)
         depth += -1 if m.group(1) else 1
         pos = m.end()
         if depth == 0:
             j = s.find(">", m.end())
             return j + 1 if j >= 0 else -1
+
+
+DIV_STOPS = ('<div id="south"', '<div class="comp', '<div id="east"',
+             '<div id="north"', '</body')
+
+
+def _div_end_fallback(s, tag_start):
+    tail_start = tag_start
+    best = -1
+    for stop in DIV_STOPS:
+        k = s.find(stop, tail_start)
+        if k >= 0 and (best < 0 or k < best):
+            best = k
+    return best
+
 
 def find_blocks(raw, page_rel):
     """按文档顺序返回 [(kind, src, clean_html)]。"""
@@ -219,6 +238,17 @@ def find_blocks(raw, page_rel):
     pre = COMMENT_RE.sub("", pre)
 
     spans = []
+    simp_spans = []
+    for m in DIV_TAG_RE.finditer(pre):
+        tag = m.group(0)
+        cm = CLASS_ATTR_RE.search(tag)
+        if not cm:
+            continue
+        cls = attr_val(cm).split()
+        if "simp" in cls:
+            end = find_div_end(pre, m.end())
+            if end > m.start():
+                simp_spans.append((m.start(), end))
     for m in DIV_TAG_RE.finditer(pre):
         tag = m.group(0)
         cm = CLASS_ATTR_RE.search(tag)
@@ -231,6 +261,8 @@ def find_blocks(raw, page_rel):
             continue
         start = m.start()
         if any(a <= start < b for a, b in spans):
+            continue
+        if any(a <= start < b for a, b in simp_spans):
             continue
         end = find_div_end(pre, m.end())
         if end < 0:
