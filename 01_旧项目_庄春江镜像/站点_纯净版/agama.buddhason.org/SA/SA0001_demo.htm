@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>雜阿含1經（简繁切换样板）</title>
+<style>
+  body { background:#EDFFE1; font-family: "Tahoma","Microsoft YaHei","微軟正黑體",sans-serif; margin:0; padding:0; }
+  #togglebar { position:sticky; top:0; z-index:99; background:#004800; color:#fff; padding:8px 14px; font-size:15px; display:flex; align-items:center; gap:12px; }
+  #togglebar button { font-size:15px; padding:4px 14px; border:none; border-radius:4px; cursor:pointer; background:#EDFFE1; color:#004800; font-weight:bold; }
+  #togglebar button.active { background:#FFD24A; color:#333; }
+  .wrap { max-width:980px; margin:18px auto; padding:0 18px 60px; font-size:17px; line-height:1.9; color:#222; }
+  .sutra_name { color:#004800; font-weight:bold; font-size:19px; }
+  .block { margin:14px 0; }
+  .block h3 { color:#525000; font-size:16px; margin:18px 0 6px; border-left:4px solid #004800; padding-left:8px; }
+  .pali { color:#333; font-family: "Times New Roman", serif; }
+  .comp { color:#333; }
+  .simp { display:none; }
+  body.simpmode .trad { display:none; }
+  body.simpmode .simp { display:block; }
+  .note { color:#666; font-size:14px; margin-top:30px; border-top:1px dashed #999; padding-top:10px; }
+</style>
+</head>
+<body>
+<div id="togglebar">
+  <span>经文语言：</span>
+  <button id="btrad" class="active" onclick="setMode('trad')">繁體</button>
+  <button id="bsimp" onclick="setMode('simp')">简体</button>
+  <span id="hint" style="font-size:13px;color:#CFE8CF">（点击切换，仅演示 SA.1 一页）</span>
+</div>
+
+<div class="wrap">
+
+  <!-- ========== 繁體（原内容） ========== -->
+  <div class="trad">
+    <div class="block">
+      <div>北傳：<b>雜阿含1經</b>　南傳：相應部22相應12-14經, 相應部22相應51經</div>
+      <div style="color:#666;font-size:14px">關涉主題：實踐／觀察無常(生滅)、無常厭離欲解脫</div>
+    </div>
+
+    <div class="block">
+      <h3>北傳（漢譯）</h3>
+      <span class="sutra_name">雜阿含1經[正聞本1-4經/佛光本1經]</span>(陰相應/五陰誦/修多羅)(莊春江標點)<br>
+      　　如是我聞：<br>
+      　　一時，佛住舍衛國祇樹給孤獨園。<br>
+      　　爾時，世尊告諸比丘：<br>
+      　　「當觀色無常，如是觀者則為正觀；正觀者則生厭離；厭離者喜、貪盡；喜、貪盡者說心解脫。<br>
+      　　如是，觀受、想、行、識無常，如是觀者則為正觀；正觀者則生厭離；厭離者喜、貪盡；喜、貪盡者說心解脫。<br>
+      　　如是，比丘！心解脫者若欲自證，則能自證：『我生已盡，梵行已立，所作已作，自知不受後有。』」<br>
+      　　如觀無常，苦、空、非我亦復如是。<br>
+      　　時，諸比丘聞佛所說，歡喜奉行。
+    </div>
+
+    <div class="block">
+      <h3>南傳（漢譯）</h3>
+      <span class="sutra_name">相應部22相應12經/無常經</span>(蘊相應/蘊篇/修多羅)(莊春江譯)<br>
+      　　被我這麼聽聞：<br>
+      　　在舍衛城，在那裡……（中略）。<br>
+      　　「比丘們！色是無常的，受是無常的，想是無常的，諸行是無常的，識是無常的。<br>
+      　　比丘們！這樣看的有聽聞的聖弟子在色上厭，也在受上厭，也在想上厭，也在諸行上厭，也在識上厭。厭者離染，從離貪被解脫，在已解脫時，有『[這是]解脫』之智，他知道：『出生已盡，梵行已完成，應該被作的已作，不再有此處[輪迴]的狀態。』」<br>
+      <br><span class="sutra_name">相應部22相應13經/苦經</span>(蘊相應/蘊篇/修多羅)(莊春江譯)<br>
+      　　起源於舍衛城。<br>
+      　　「比丘們！色是苦的，受是苦的，想是苦的，諸行是苦的，識是苦的。這樣看的……（中略）他知道：『……不再有此處[輪迴]的狀態。』」<br>
+      <br><span class="sutra_name">相應部22相應14經/無我經</span>(蘊相應/蘊篇/修多羅)(莊春江譯)<br>
+      　　起源於舍衛城。<br>
+      　　「比丘們！色是無我，受是無我，想是無我，諸行是無我，識是無我。<br>
+      　　比丘們！這樣看的有聽聞的聖弟子在色上厭，也在受上厭，也在想上厭，也在諸行上厭，也在識上厭。厭者離染，從離貪被解脫，在已解脫時，有『[這是]解脫』之智，他知道：『出生已盡，梵行已完成，應該被作的已作，不再有此處[輪迴]的狀態。』」<br>
+      <br><span class="sutra_name">相應部22相應51經/歡喜的滅盡經</span>(蘊相應/蘊篇/修多羅)(莊春江譯)<br>
+      　　起源於舍衛城。<br>
+      　　「比丘們！比丘看『無常的色』只是無常的，那是他的正見。正確看見者厭，從歡喜的滅盡有貪的滅盡；從貪的滅盡有歡喜的滅盡。從歡喜、貪的滅盡心被解脫，被稱為『善解脫』。<br>
+      　　比丘們！比丘看『無常的受』只是無常的，那是他的正見，正確看見者厭，從歡喜的滅盡有貪的滅盡；從貪的滅盡有歡喜的滅盡。從歡喜、貪的滅盡心被解脫，被稱為『善解脫』。比丘們！比丘看『無常的想』只是無常的……（中略）比丘們！比丘看『無常的諸行』只是無常的，那是他的正見，正確看見者厭，從歡喜的滅盡有貪的滅盡；從貪的滅盡有歡喜的滅盡。從歡喜、貪的滅盡心被解脫，被稱為『善解脫』。比丘們！比丘看『無常的識』只是無常的，那是他的正見，正確看見者厭，從歡喜的滅盡有貪的滅盡；從貪的滅盡有歡喜的滅盡。從歡喜、貪的滅盡心被解脫，被稱為『善解脫』。」
+    </div>
+
+    <div class="block pali">
+      <h3>巴利語經文</h3>
+      <span class="sutra_name">SN.22.12/(1). Aniccasuttaṃ</span><br>
+      　　 12. Evaṃ me sutaṃ– sāvatthiyaṃ. Tatra kho …pe… “rūpaṃ, bhikkhave, aniccaṃ, vedanā aniccā, saññā aniccā, saṅkhārā aniccā, viññāṇaṃ aniccaṃ. Evaṃ passaṃ, bhikkhave, sutavā ariyasāvako rūpasmimpi nibbindati, vedanāyapi nibbindati, saññāyapi nibbindati, saṅkhāresupi nibbindati, viññāṇasmimpi nibbindati. Nibbindaṃ virajjati virāgā vimuccati. Vimuttasmiṃ vimuttamiti ñāṇaṃ hoti. ‘Khīṇā jāti, vusitaṃ brahmacariyaṃ, kataṃ karaṇīyaṃ, nāparaṃ itthattāyā’ti pajānātī”ti. Paṭhamaṃ.<br>
+      <br><span class="sutra_name">SN.22.51/(9). Nandikkhayasuttaṃ</span><br>
+      　　 51. Sāvatthinidānaṃ. “Aniccaññeva, bhikkhave, bhikkhu rūpaṃ aniccanti passati. Sāssa hoti sammādiṭṭhi. Sammā passaṃ nibbindati. Nandikkhayā rāgakkhayo, rāgakkhayā nandikkhayo. Nandirāgakkhayā cittaṃ vimuttaṃ suvimuttanti vuccati…”ti. Navamaṃ.
+    </div>
+
+    <div class="block comp">
+      <h3>南北傳經文比對（莊春江作）</h3>
+      　　「觀」，南傳作「看」(passati)，菩提比丘長老英譯為「看見」(sees)，這是指「看到了內涵」，也就是「理解」的意思。<br>
+      　　「正觀」，南傳作「正見」(sammādiṭṭhi)，菩提比丘長老英譯為「正確的見解」(right view)，也就是「八聖道」（或譯為「八正道；八支聖道」）中的「正見」。<br>
+      　　「只是無常的」(aniccaññeva, aniccaṃ eva)，菩提比丘長老英譯為「為不持久的」(as impermanent)。<br>
+      　　「如觀無常，苦、空、非我亦復如是。」應該分別是以「無常、苦、空、非我」為「觀」的內容之四部經(SN.22.12-14四經相類)，「正聞本」經號依此計算，符合SA.7「歡喜奉行」後的攝誦內容，應是原典的樣貌。
+    </div>
+  </div>
+
+  <!-- ========== 简体（预转换副本） ========== -->
+  <div class="simp">
+    <div class="block">
+      <div>北传：<b>杂阿含1经</b>　南传：相应部22相应12-14经, 相应部22相应51经</div>
+      <div style="color:#666;font-size:14px">关涉主题：实践／观察无常(生灭)、无常厌离欲解脱</div>
+    </div>
+
+    <div class="block">
+      <h3>北传（汉译）</h3>
+      <span class="sutra_name">杂阿含1经[正闻本1-4经/佛光本1经]</span>(阴相应/五阴诵/修多罗)(庄春江标点)<br>
+      　　如是我闻：<br>
+      　　一时，佛住舍卫国祇树给孤独园。<br>
+      　　尔时，世尊告诸比丘：<br>
+      　　「当观色无常，如是观者则为正观；正观者则生厌离；厌离者喜、贪尽；喜、贪尽者说心解脱。<br>
+      　　如是，观受、想、行、识无常，如是观者则为正观；正观者则生厌离；厌离者喜、贪尽；喜、贪尽者说心解脱。<br>
+      　　如是，比丘！心解脱者若欲自证，则能自证：『我生已尽，梵行已立，所作已作，自知不受后有。』」<br>
+      　　如观无常，苦、空、非我亦复如是。<br>
+      　　时，诸比丘闻佛所说，欢喜奉行。
+    </div>
+
+    <div class="block">
+      <h3>南传（汉译）</h3>
+      <span class="sutra_name">相应部22相应12经/无常经</span>(蕴相应/蕴篇/修多罗)(庄春江译)<br>
+      　　被我这么听闻：<br>
+      　　在舍卫城，在那里……（中略）。<br>
+      　　「比丘们！色是无常的，受是无常的，想是无常的，诸行是无常的，识是无常的。<br>
+      　　比丘们！这样看的有听闻的圣弟子在色上厌，也在受上厌，也在想上厌，也在诸行上厌，也在识上厌。厌者离染，从离贪被解脱，在已解脱时，有『[这是]解脱』之智，他知道：『出生已尽，梵行已完成，应该被作的已作，不再有此处[轮回]的状态。』」<br>
+      <br><span class="sutra_name">相应部22相应13经/苦经</span>(蕴相应/蕴篇/修多罗)(庄春江译)<br>
+      　　起源于舍卫城。<br>
+      　　「比丘们！色是苦的，受是苦的，想是苦的，诸行是苦的，识是苦的。这样看的……（中略）他知道：『……不再有此处[轮回]的状态。』」<br>
+      <br><span class="sutra_name">相应部22相应14经/无我经</span>(蕴相应/蕴篇/修多罗)(庄春江译)<br>
+      　　起源于舍卫城。<br>
+      　　「比丘们！色是无我，受是无我，想是无我，诸行是无我，识是无我。<br>
+      　　比丘们！这样看的有听闻的圣弟子在色上厌，也在受上厌，也在想上厌，也在诸行上厌，也在识上厌。厌者离染，从离贪被解脱，在已解脱时，有『[这是]解脱』之智，他知道：『出生已尽，梵行已完成，应该被作的已作，不再有此处[轮回]的状态。』」<br>
+      <br><span class="sutra_name">相应部22相应51经/欢喜的灭尽经</span>(蕴相应/蕴篇/修多罗)(庄春江译)<br>
+      　　起源于舍卫城。<br>
+      　　「比丘们！比丘看『无常的色』只是无常的，那是他的正见。正确看见者厌，从欢喜的灭尽有贪的灭尽；从贪的灭尽有欢喜的灭尽。从欢喜、贪的灭尽心被解脱，被称为『善解脱』。<br>
+      　　比丘们！比丘看『无常的受』只是无常的，那是他的正见，正确看见者厌，从欢喜的灭尽有贪的灭尽；从贪的灭尽有欢喜的灭尽。从欢喜、贪的灭尽心被解脱，被称为『善解脱』。比丘们！比丘看『无常的想』只是无常的……（中略）比丘们！比丘看『无常的诸行』只是无常的，那是他的正见，正确看见者厌，从欢喜的灭尽有贪的灭尽；从贪的灭尽有欢喜的灭尽。从欢喜、贪的灭尽心被解脱，被称为『善解脱』。比丘们！比丘看『无常的识』只是无常的，那是他的正见，正确看见者厌，从欢喜的灭尽有贪的灭尽；从贪的灭尽有欢喜的灭尽。从欢喜、贪的灭尽心被解脱，被称为『善解脱』。」
+    </div>
+
+    <div class="block pali">
+      <h3>巴利语经文（不转简繁）</h3>
+      <span class="sutra_name">SN.22.12/(1). Aniccasuttaṃ</span><br>
+      　　 12. Evaṃ me sutaṃ– sāvatthiyaṃ. Tatra kho …pe… “rūpaṃ, bhikkhave, aniccaṃ, vedanā aniccā, saññā aniccā, saṅkhārā aniccā, viññāṇaṃ aniccaṃ. Evaṃ passaṃ, bhikkhave, sutavā ariyasāvako rūpasmimpi nibbindati, vedanāyapi nibbindati, saññāyapi nibbindati, saṅkhāresupi nibbindati, viññāṇasmimpi nibbindati. Nibbindaṃ virajjati virāgā vimuccati. Vimuttasmiṃ vimuttamiti ñāṇaṃ hoti. ‘Khīṇā jāti, vusitaṃ brahmacariyaṃ, kataṃ karaṇīyaṃ, nāparaṃ itthattāyā’ti pajānātī”ti. Paṭhamaṃ.<br>
+      <br><span class="sutra_name">SN.22.51/(9). Nandikkhayasuttaṃ</span><br>
+      　　 51. Sāvatthinidānaṃ. “Aniccaññeva, bhikkhave, bhikkhu rūpaṃ aniccanti passati. Sāssa hoti sammādiṭṭhi. Sammā passaṃ nibbindati. Nandikkhayā rāgakkhayo, rāgakkhayā nandikkhayo. Nandirāgakkhayā cittaṃ vimuttaṃ suvimuttanti vuccati…”ti. Navamaṃ.
+    </div>
+
+    <div class="block comp">
+      <h3>南北传经文比对（庄春江作）</h3>
+      　　「观」，南传作「看」(passati)，菩提比丘长老英译为「看见」(sees)，这是指「看到了内涵」，也就是「理解」的意思。<br>
+      　　「正观」，南传作「正见」(sammādiṭṭhi)，菩提比丘长老英译为「正确的见解」(right view)，也就是「八圣道」（或译为「八正道；八支圣道」）中的「正见」。<br>
+      　　「只是无常的」(aniccaññeva, aniccaṃ eva)，菩提比丘长老英译为「为不持久的」(as impermanent)。<br>
+      　　「如观无常，苦、空、非我亦复如是。」应该分别是以「无常、苦、空、非我」为「观」的内容之四部经(SN.22.12-14四经相类)，「正闻本」经号依此计算，符合SA.7「欢喜奉行」后的摄诵内容，应是原典的样貌。
+    </div>
+  </div>
+
+  <div class="note">
+    ※ 这是<b>样板页</b>：繁体内容为原页面，简体为预先生成的副本，通过顶部按钮切换显示。确认效果后会批量处理全站经文页（含注释、比对），跳过首页与图片。
+  </div>
+</div>
+
+<script>
+function setMode(m) {
+  if (m === 'simp') {
+    document.body.classList.add('simpmode');
+    document.getElementById('bsimp').classList.add('active');
+    document.getElementById('btrad').classList.remove('active');
+  } else {
+    document.body.classList.remove('simpmode');
+    document.getElementById('btrad').classList.add('active');
+    document.getElementById('bsimp').classList.remove('active');
+  }
+  try { localStorage.setItem('agama_lang', m); } catch(e) {}
+}
+try {
+  var saved = localStorage.getItem('agama_lang');
+  if (saved === 'simp') setMode('simp');
+} catch(e) {}
+</script>
+</body>
+</html>

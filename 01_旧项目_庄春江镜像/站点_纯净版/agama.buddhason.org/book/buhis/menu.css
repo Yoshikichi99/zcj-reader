@@ -1,0 +1,41 @@
+﻿
+/* <body bgcolor="#ECFFEC"  link="#FF7777" vlink="#006A00" alink="#4E9B00"> */
+/* 背景色 */
+body { background-color:#ECFFEC; }
+
+/* 連結的顏色 */
+a:link {color:#838341;} 
+a:visited {color:#006A00;} 
+a:hover {color:#FF0000;} 
+a:active {color:#4E9B00;}
+
+/* 選單與周圍間隙 */
+#productsandservices { margin: 0 0 1px 0; }
+
+/* 選單的字體 */
+.yui-skin-sam .yuimenubaritem , .yui-skin-sam .yuimenuitemlabel {
+	font-size: 20px;
+	color:#484800
+}
+
+/* 移除第一層選單的框及背景 */
+.yui-skin-sam .yuimenubar{
+	border-width: 0px;
+	background:url();
+}
+.yui-skin-sam .yuimenubaritemlabel{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritem{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-selected{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubaritem-selected{
+	background:url();
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-selected {
+	margin-left: 0px;
+}
+

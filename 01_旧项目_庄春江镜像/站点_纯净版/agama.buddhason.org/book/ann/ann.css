@@ -1,0 +1,7 @@
+﻿body { background-color:#EDFFE1;
+font-family:Times New Roman,Tahoma, 新細明體, SimSun; }
+a { text-decoration:underline; }
+a:link    { color: #004800;text-decoration:none; }
+a:visited { color: #004800;text-decoration:none; }
+a:active  { color: #FF7777;text-decoration:none; }
+a:hover   { color: #3366FF;text-decoration:underline; }

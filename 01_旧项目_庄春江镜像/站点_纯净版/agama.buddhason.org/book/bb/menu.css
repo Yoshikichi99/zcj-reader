@@ -1,0 +1,74 @@
+﻿
+/* <body bgcolor="#ECFFEC"  link="#FF7777" vlink="#006A00" alink="#4E9B00"> */
+/* 背景色 */
+body { background-color:#ECFFEC; }
+font-family:Times New Roman,Tahoma, 新細明體, SimSun; }
+
+/* 連結的顏色 */
+a { text-decoration:underline; }
+a:link    { color: #004800;text-decoration:none; }
+a:visited { color: #004800;text-decoration:none; }
+a:active  { color: #FF7777;text-decoration:none; }
+a:hover   { color: #3366FF;text-decoration:underline; }
+
+
+/* 選單與周圍間隙 */
+#productsandservices { margin: 0 0 1px 0; }
+
+/* 選單的字體 */
+.yui-skin-sam .yuimenubaritem , .yui-skin-sam .yuimenuitemlabel {
+	font-size: 20px;
+	color:#484800
+}
+
+/* 移除第一層選單的框及背景 */
+.yui-skin-sam .yuimenubar{
+	border-width: 0px;
+	background:url();
+}
+.yui-skin-sam .yuimenubaritemlabel{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritem{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-selected{
+	border-width: 0px;
+}
+.yui-skin-sam .yuimenubaritem-selected{
+	background:url();
+}
+.yui-skin-sam .yuimenubarnav .yuimenubaritemlabel-selected {
+	margin-left: 0px;
+}
+
+/* 彈出式註解視窗的屬性 */
+#notediv{
+	position:absolute; 
+	overflow:visible; 
+	z-index: 10; 
+	border:#000000 1px solid; 
+	width:600px; 
+	background-color: #ECFFEC; 
+	display:none; 
+	padding:10px; 
+	text-align:left;
+	font-size:24px;
+	color: #2F2F00;
+	line-height: 28pt;
+
+}
+
+/* 文章中連結數字的屬性 [01] */
+a.link {
+	color: #3366FF;
+}
+
+/* 文章底下註解文字的屬性 */
+div.note {
+	color: #006A00;
+	font-size:18pt;
+	line-height: 200%; 
+	margin-left: 30; 
+	margin-right: 20
+}

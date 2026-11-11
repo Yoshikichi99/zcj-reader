@@ -1,0 +1,56 @@
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>測試增壹阿含</title>
+</head>
+
+<body>
+<?
+	$count = 0;		// 經文的數量
+	$in_sutra = 1;	// 判斷某一些是否在經文範圍
+		
+	$file = fopen("AA.txt","r");	// 讀入測試經文
+	
+	if ($file)
+	{
+    	while (!feof($file))
+    	{
+        	$line = fgets($file);		// 逐行讀入
+        	       	
+        	if(substr($line,0,3) == "###")	// 表示新的一經開始了
+        	{
+        		$count++;
+        		$in_sutra = 1;
+        		$line = substr($line,3);					// 移除 ### 符號
+        		$sutra[$count] = $sutra[$count] . $line;	// 加入此行
+        	}
+        	else if(substr($line,-4,3) == "***")	// 表示一經結束了
+        	{
+        		$in_sutra = 0;
+        		$line = substr($line,0,-4);					// 移除 *** 符號
+        		$sutra[$count] = $sutra[$count] . $line;	// 加入此行
+        	}
+        	else if($in_sutra == 1)		// 目前是在某一經裡面, 將此行加入陣列中
+        	{
+        		$sutra[$count] = $sutra[$count] . $line;
+        	}
+    	}
+	}
+    fclose($file);
+    
+    
+    // 測試結果, 一一將各經印出來
+    
+    for($i=1; $i<=30 ; $i++)
+    {
+    	echo "<hr><pre>";
+    	echo $sutra[$i];
+    	echo "</pre>";
+    }
+	
+?>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"e6be1d12c6074df190e6bd6bf192df1d","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
+

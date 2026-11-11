@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>莊春江讀經站 · 離線版</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header id="topbar">
+  <button id="btn-back" class="icon" aria-label="返回" title="返回">‹</button>
+  <div id="crumb" class="crumb"></div>
+  <div class="spacer"></div>
+  <button id="btn-search" class="icon" aria-label="搜索" title="全文搜索">⌕</button>
+  <button id="btn-settings" class="icon wide" aria-label="設置" title="閱讀設置">Aa</button>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<div id="note-pop" hidden>
+  <div class="note-card">
+    <div class="note-head"><span id="note-title">註解</span><button id="note-close" class="icon" aria-label="關閉">×</button></div>
+    <div id="note-text" class="note-text"></div>
+  </div>
+</div>
+
+<div id="drawer" hidden>
+  <div class="drawer-mask"></div>
+  <aside class="drawer-panel">
+    <h2>閱讀設置</h2>
+    <div class="row">
+      <span>字號</span>
+      <div class="seg">
+        <button data-fs="-1">A−</button>
+        <span id="fs-val">19</span>
+        <button data-fs="1">A＋</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>行距</span>
+      <div class="seg">
+        <button data-lh="-1">窄</button>
+        <span id="lh-val">1.9</span>
+        <button data-lh="1">寬</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>字體</span>
+      <div class="seg">
+        <button data-font="serif" class="on">宋體</button>
+        <button data-font="sans">黑體</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>主題</span>
+      <div class="seg" id="theme-seg">
+        <button data-theme="light" class="on">日間</button>
+        <button data-theme="sepia">米色</button>
+        <button data-theme="night">夜間</button>
+      </div>
+    </div>
+    <div class="row">
+      <span>經文</span>
+      <div class="seg" id="lang-seg">
+        <button data-lang="trad" class="on">繁體</button>
+        <button data-lang="simp">簡體</button>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <p>本站內容版權歸莊春江居士所有，僅供個人學習研究。<br>離線版 · 不聯網 · 無任何權限</p>
+      <button id="btn-clear" class="link-btn">清除閱讀記錄</button>
+    </div>
+  </aside>
+</div>
+
+<div id="loading" hidden><div class="spin"></div><div id="loading-text">載入中…</div></div>
+
+<script src="app.js"></script>
+</body>
+</html>

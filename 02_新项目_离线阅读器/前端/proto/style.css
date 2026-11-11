@@ -1,0 +1,260 @@
+/* 莊春江讀經站 · 離線版原型 —— 尽量还原原站（ExtJS 面板 + 绿色底 + 深色经文） */
+:root{
+  --bg:#EDFFE1;
+  --panel-border:#99BBE8;
+  --panel-head1:#EEF4FB;
+  --panel-head2:#D9E5F5;
+  --blue:#2E6DB4;
+  --agama:#005B00;
+  --nikaya:#525000;
+  --pali:#666699;
+  --comp:#00605B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg)}
+body{
+  font-family:Tahoma,"新細明體","PMingLiU","Microsoft JhengHei","微軟正黑體","Microsoft YaHei","微软雅黑",SimSun,"宋体","Arial Unicode MS",sans-serif;
+  color:#333;
+  -webkit-text-size-adjust:100%;
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{color:#993333;text-decoration:underline}
+
+/* ---------- 顶栏 ---------- */
+#top{position:sticky;top:0;z-index:20;background:var(--bg)}
+.titlebar{
+  text-align:center;font-size:14pt;color:var(--blue);
+  padding:6px 0 2px;border-bottom:1px solid #cfe0b8;
+}
+.titlebar a{margin:0 .6em}
+.searchrow{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:6px 12px;font-size:15pt;color:var(--nikaya);flex-wrap:wrap;
+}
+.searchrow form{display:flex;align-items:center;gap:4px;margin:0}
+.searchrow input[type=text]{
+  font-size:14pt;color:#54547E;border:1px solid #bbb;border-radius:3px;
+  padding:2px 6px;background:#fff;
+}
+.searchrow input[type=submit]{
+  font-size:12pt;background:var(--bg);color:#003AE8;border:1px solid #bbb;border-radius:3px;
+  padding:2px 10px;cursor:pointer;
+}
+.update_time{color:#999966;font-size:12pt}
+
+/* ---------- 两栏 ---------- */
+.panes{
+  display:flex;gap:0;padding:0 6px 6px;
+  height:calc(100vh - 110px);min-height:420px;
+}
+.pane{
+  flex:1 1 50%;min-width:0;display:flex;flex-direction:column;
+  border:1px solid var(--panel-border);background:var(--bg);
+}
+.pane + .pane{margin-left:6px}
+.pane .ph{
+  background:linear-gradient(var(--panel-head1),var(--panel-head2));
+  border-bottom:1px solid var(--panel-border);
+  color:var(--blue);font-size:13pt;padding:4px 8px;
+  display:flex;align-items:center;gap:6px;cursor:default;
+}
+.pane .ph .ttl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pane .ph .fold{
+  color:#CC3300;cursor:pointer;font-size:14pt;padding:0 4px;
+}
+.pane .pb{
+  flex:1;overflow:auto;padding:6px 14px 40px;
+  font-size:19pt;line-height:34pt;
+}
+.pane.collapsed{flex:0 0 34px}
+.pane.collapsed .pb{display:none}
+.pane.collapsed .ph .ttl{display:none}
+
+/* 经文配色 */
+.agama{color:var(--agama)}
+.nikaya{color:var(--nikaya)}
+.pali{color:var(--pali)}
+.comp{color:var(--comp)}
+.sn{text-decoration:underline;font-weight:bold}
+.pnote{display:block;font-size:.85em;line-height:1.8;color:#666;border-top:1px dashed #ccc;margin-top:.4em}
+[data-fs="xxl"]{font-size:1.4em;font-weight:bold;display:block;margin:.5em 0}
+[data-fs="xl"]{font-size:1.25em;font-weight:bold;display:block;margin:.4em 0}
+[data-fs="l"]{font-size:1.1em;font-weight:bold;display:block;margin:.3em 0}
+a.n,a.l{border-bottom:1px dotted #8a7b4a;color:inherit;text-decoration:none;cursor:pointer}
+a.n:hover,a.l:hover{background:#FFF7C0;text-decoration:none}
+img{max-width:100%;height:auto}
+table{border-collapse:collapse;max-width:100%}
+td,th{border:1px solid #cfe0b8;padding:4px 8px;vertical-align:top}
+
+/* ---------- 注释窗 ---------- */
+#notediv{
+  position:fixed;z-index:60;display:none;
+  max-width:700px;width:min(700px,92vw);max-height:70vh;overflow:auto;
+  background:var(--bg);border:2px solid #005B00;padding:10px 14px;
+  font-size:17pt;line-height:28pt;color:#333;
+  box-shadow:0 4px 18px rgba(0,0,0,.25);
+}
+#notediv.show{display:block}
+
+/* ---------- 简繁开关 ---------- */
+#langbar{
+  position:fixed;right:8px;bottom:6px;z-index:40;
+  background:var(--bg);border:1px solid #BBFF8E;padding:2px 8px;
+  font-size:11pt;opacity:.95;
+}
+#langbar a{color:var(--blue)}
+
+/* ---------- 首页 ---------- */
+.home{padding:10px 8px 40px;text-align:center}
+.home table{margin:0 auto}
+.home img{border:0;max-width:100%}
+.home .row{margin:0 0 8px}
+.home .grp{margin:10px 0}
+.home .cap{font-size:11pt;color:#777;margin-top:16px}
+
+/* ---------- 目录页 ---------- */
+.cat{padding:10px 16px 60px;max-width:900px;margin:0 auto}
+.cat h1{font-size:20pt;color:var(--agama);margin:8px 0 4px}
+.cat .meta{color:#777;font-size:11pt;margin-bottom:10px}
+.cat ul{list-style:none;padding:0;margin:0;columns:2;column-gap:24px}
+.cat li{padding:3px 0;font-size:13pt;break-inside:avoid}
+.cat li .no{color:#888;font-size:10pt;margin-right:6px}
+.cat li a{color:#333}
+.cat li a:hover{color:var(--blue)}
+
+/* ---------- 搜索 ---------- */
+.search{padding:10px 16px 60px;max-width:900px;margin:0 auto}
+.search h1{font-size:18pt;margin:6px 0 12px;color:var(--agama)}
+.search .item{padding:6px 0;border-bottom:1px solid #d8e8c4;font-size:13pt}
+
+/* ---------- 加载 ---------- */
+#boot{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);z-index:100;font-size:15pt;color:var(--agama);
+}
+#boot .box{text-align:center}
+#boot .bar{width:240px;height:6px;background:#d8e8c4;margin:14px auto 0;border-radius:3px;overflow:hidden}
+#boot .bar i{display:block;height:100%;width:0;background:#7aa34a;transition:width .2s}
+
+@media (max-width:760px){
+  .panes{flex-direction:column;height:auto}
+  .pane + .pane{margin-left:0;margin-top:6px}
+  .pane .pb{max-height:none}
+  .cat ul{columns:1}
+}
+
+/* ---------- 栏目页：数字格 ---------- */
+.cat .grp{margin:14px 0 20px}
+.cat .grp h2{
+  font-size:15pt;color:#525000;margin:0 0 6px;padding-bottom:3px;
+  border-bottom:1px solid #cfe0b8;font-weight:normal;
+}
+.numgrid{width:100%;border-collapse:collapse}
+.numgrid td{width:10%;text-align:center;padding:2px 0}
+.numgrid a{font-size:15pt;color:#2E6DB4}
+.home .foot{margin-top:22px;font-size:11pt;color:#777;line-height:1.8}
+/* ---------- 首页与图片底色对齐（GIF 底色 #EFFFDE） ---------- */
+html,body{background:#EFFFDE}
+
+/* ---------- 栏目页：原站页头 + 数字格 ---------- */
+.numgrid td{border:0}
+.idx-head{font-size:15pt;line-height:1.9;color:#333;margin-bottom:6px}
+.idx-head table{margin:0 auto;border:0}
+.idx-head td{border:0;padding:1px 4px}
+.idx-head img{max-width:100%}
+.idx-head form{margin:0}
+.idx-head input[type=text]{font-size:12pt;color:#54547E}
+.idx-head input[type=submit]{font-size:12pt;background:#EDFFE1;color:#003AE8}
+.idx-head a{color:#2E6DB4}
+
+/* ---------- 上一篇 / 下一篇 ---------- */
+.pager{display:flex;justify-content:space-between;align-items:center;
+  margin:22px 0 8px;padding-top:12px;border-top:1px solid #cfe0b8;font-size:13pt}
+.pager a{color:#2E6DB4}
+.pager span{flex:1}
+/* ---------- 原站页面（首页/栏目页）直接搬入 ---------- */
+.orig{width:100%;margin:0 auto;padding:8px 20px 40px;font-size:15pt}
+.orig table{margin:0 auto;border-collapse:separate}
+.orig td,.orig th{border:0;vertical-align:top}
+.orig img{max-width:100%;height:auto;border:0}
+.orig a{color:#2E6DB4}
+.orig form{margin:0}
+.orig input[type=text]{font-size:12pt;color:#54547E}
+.orig input[type=submit]{font-size:12pt;background:#EFFFDE;color:#003AE8}
+/* ---------- 顶部提示 ---------- */
+#toast{
+  position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:90;
+  background:#2f2b24;color:#fff;font-size:12pt;padding:6px 16px;border-radius:16px;
+  opacity:.9;display:none;font-family:system-ui,sans-serif;
+}
+/* ---------- 静态页导航（首頁/目錄/上一節/下一節） ---------- */
+.sitenav{
+  width:100%;margin:0 auto;padding:8px 20px;text-align:center;
+  font-size:16pt;color:#222;
+}
+.sitenav a{margin-right:22px;color:#222}
+.sitenav.bottom{border-top:1px solid #cfe0b8;margin-top:14px;padding-top:10px}
+/* ---------- 原站内容的基础重置（等效 YUI reset，只在 .orig 内生效） ---------- */
+.orig p, .orig div, .orig li, .orig h1, .orig h2, .orig h3, .orig h4 {
+  margin:0; padding:0; font-weight:normal; font-style:normal;
+}
+.orig ul,.orig ol{margin:0;padding:0;list-style:none}
+.orig img{border:0;vertical-align:middle;max-width:100%;height:auto}
+.orig p{margin:0}
+
+/* ---------- 链接：压暗 + 点过变色 ---------- */
+a.visited, .orig a.visited, .sitenav a.visited, .numgrid a.visited, .pager a.visited{
+  color:#8A4B8F !important;
+}
+
+/* ---------- 栏目内全文搜索 ---------- */
+.searchbox2{display:flex;gap:8px;margin:10px 0 18px}
+.searchbox2 input{flex:1;min-width:0;padding:8px 12px;font-size:14pt;border:1px solid #bbb;border-radius:4px}
+.searchbox2 button{padding:8px 16px;font-size:13pt;border:1px solid #bbb;border-radius:4px;background:#f3f7ea;cursor:pointer}
+.hit{padding:10px 0;border-bottom:1px solid #d8e8c4}
+.hit a{font-size:15pt;font-weight:600;color:#2E6DB4}
+.hit .from{color:#888;font-size:11pt}
+.hit .snip{color:#444;font-size:12pt;line-height:1.9;margin-top:4px;font-family:"新細明體",SimSun,serif}
+.hit mark{background:#FFE9A8;color:inherit;padding:0 1px}
+/* ---------- 栏目页表单：同一行、统一高度 ---------- */
+.orig form{white-space:nowrap;margin:0;display:inline}
+.orig input[type=text], .orig input[type=submit]{
+  height:30px; line-height:1.2; box-sizing:border-box; vertical-align:middle;
+  border:1px solid #999; border-radius:2px;
+}
+.orig input[type=text]{padding:0 4px}
+.orig input[type=submit]{padding:0 8px}
+
+/* ---------- 窄窗口：栏目页表单竖向排列，避免挤在一起 ---------- */
+@media (max-width: 900px){
+  .orig td:has(> form), .orig td:has(> div > form){
+    display:block; width:100% !important; text-align:center !important;
+  }
+  .orig td:has(> form) > form,
+  .orig td:has(> div > form) > div{ text-align:center !important; }
+  .orig form{ white-space:normal; }
+  .orig a.anch{ cursor:pointer; }
+}
+.orig a.anch{ cursor:pointer; }
+/* ---------- 窄屏（手机/窄窗口） ---------- */
+@media (max-width: 760px){
+  .titlebar{font-size:12pt;padding:4px 6px;white-space:normal;line-height:1.6}
+  .titlebar a{margin:0 .35em}
+  .searchrow{flex-wrap:wrap;gap:6px;padding:6px 8px}
+  .searchrow form{flex:1 1 auto}
+  .searchrow input[type=text]{width:auto;min-width:0;flex:1}
+  .searchrow input[type=submit]{padding:4px 10px}
+  .pane .pb{font-size:16pt;line-height:28pt;padding:4px 8px 24px}
+  .sitenav{font-size:13pt;padding:6px 8px}
+  .sitenav a{margin-right:12px}
+  .orig{padding:6px 8px 24px;font-size:13pt}
+  .hit a{font-size:13pt}
+  .hit .snip{font-size:11pt;line-height:1.7}
+  .searchbox2 input{font-size:13pt}
+}
+/* ---------- 未实装提示页 ---------- */
+.notice{padding:40px 24px 80px;max-width:760px}
+.notice h1{font-size:20pt;color:#525000;margin-bottom:16px}
+.notice p{font-size:14pt;line-height:2;margin:6px 0}
+.notice .url a{font-size:15pt;color:#2E6DB4;word-break:break-all}
+.notice .tip{color:#777;font-size:11pt;margin-top:14px}
