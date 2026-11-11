@@ -258,3 +258,22 @@ a.visited, .orig a.visited, .sitenav a.visited, .numgrid a.visited, .pager a.vis
 .notice p{font-size:14pt;line-height:2;margin:6px 0}
 .notice .url a{font-size:15pt;color:#2E6DB4;word-break:break-all}
 .notice .tip{color:#777;font-size:11pt;margin-top:14px}
+/* ---------- 授权页脚与授权页（CC BY-NC-SA 4.0） ---------- */
+.licensebar{border-top:1px solid #ddd;margin-top:28px;padding:10px 14px 18px;text-align:center;
+  font-size:9pt;color:#777;line-height:1.8}
+.licensebar a{color:#5a6b7d;text-decoration:underline}
+.licensebar a:hover{color:#2E6DB4}
+.license{padding:24px 24px 60px;max-width:760px}
+.license h1{font-size:18pt;color:#525000;margin-bottom:14px}
+.license h2{font-size:12pt;color:#525000;margin:18px 0 6px}
+.license p{font-size:12pt;line-height:1.9;margin:8px 0}
+.license ul{margin:6px 0 6px 1.5em;line-height:1.9;font-size:11.5pt}
+.license table.lic{border-collapse:collapse;margin:12px 0;font-size:11pt}
+.license table.lic th{text-align:right;padding:5px 12px 5px 0;color:#666;font-weight:normal;white-space:nowrap;vertical-align:top}
+.license table.lic td{padding:5px 0}
+.license .tip{color:#777;font-size:10.5pt;margin-top:16px}
+@media (max-width:760px){
+  .licensebar{font-size:8.5pt;padding:8px 10px 14px}
+  .license{padding:16px 14px 40px}
+  .license p,.license ul{font-size:11.5pt}
+}

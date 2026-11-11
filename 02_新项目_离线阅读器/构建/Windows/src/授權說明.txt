@@ -1,0 +1,19 @@
+授權說明
+
+本程式所附之經文、譯文、註釋、音頻與 PDF，均由莊春江老師翻譯、整理與著述，
+現由家屬決議採創用 CC 授權開放分享。
+
+著作人：莊春江（家屬授權開放分享）
+來源：https://agama.buddhason.org/
+授權：創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際
+      https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant
+版權聲明：莊春江工作站 Copyright © 2011
+
+本離線版僅重新編排、壓縮與重新命名，未改動文字內容。
+轉載或再散布時，請保留本說明、標示作者與授權並附上連結，
+且不得用於商業目的；衍生作品須以相同條款分享。
+
+程式本身（抽取腳本、前端、Windows 殼）依 CC BY 4.0 授權：
+https://creativecommons.org/licenses/by/4.0/deed.zh-hant
+
+本離線版由讀者自行製作，為非官方版本，與原作者及家屬無隸屬或背書關係。

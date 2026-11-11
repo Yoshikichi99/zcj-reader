@@ -211,13 +211,57 @@
     const h = (location.hash || "#/").slice(1);
     const parts = h.split("/").filter(Boolean);
     const view = parts[0] || "home";
+    paintFooter();
     if (view === "c") return viewCat(parts[1]);
     if (view === "p") return viewPage(parts.slice(1).join("/"));
     if (view === "b") return viewBook(parts.slice(1).join("/"));
     if (view === "d") return viewDoc(parts.slice(1).join("/"));
+    if (view === "license") return viewLicense();
     if (view === "notice") return viewNotice();
     if (view === "s") return viewSearch(parts[1] || "", decodeURIComponent(parts.slice(2).join("/")));
     return viewHome();
+  }
+
+  /* ---------------- 授权页脚（内容依 CC BY-NC-SA 4.0） ---------------- */
+  function paintFooter() {
+    const el = document.getElementById("foot");
+    if (!el) return;
+    el.innerHTML =
+      '<div class="licensebar">' +
+        tr("內容授權：") +
+        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>' +
+        tr(" · 作者：莊春江 · ") +
+        '<a href="#/license">' + tr("授權與來源") + "</a>" +
+        tr(" · 非官方離線版") +
+      "</div>";
+  }
+
+  function viewLicense() {
+    app().innerHTML = topBar() + tr(
+      `<div class="cat license">
+        <h1>內容授權與來源</h1>
+        <p>本站經文、譯文、註釋、巴利原文、音頻與 PDF，均由<strong>莊春江</strong>老師翻譯、整理與著述，
+           現由家屬決議採創用 CC 授權開放分享。</p>
+        <table class="lic">
+          <tr><th>作者</th><td>莊春江（家屬授權開放分享）</td></tr>
+          <tr><th>來源</th><td><a href="https://agama.buddhason.org/" target="_blank" rel="noopener">https://agama.buddhason.org/</a></td></tr>
+          <tr><th>授權</th><td><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際</a></td></tr>
+        </table>
+        <p>依授權條款，您可以自由複製、改作與再散布，但須標示作者與來源、不得用於商業目的，
+           且衍生作品須以相同條款分享。</p>
+        <h2>本離線版對內容的改動</h2>
+        <ul>
+          <li>經文依系列拆分、去除重複，並以 gzip 壓縮存放；</li>
+          <li>提供繁體→簡體的執行期轉換，僅保存繁體原文；</li>
+          <li>音頻與 PDF 依標題重新命名，另作獨立擴展包；</li>
+          <li>原站連結改寫為本程式的內部路由。</li>
+        </ul>
+        <p>不涉及文字內容的刪改；抽取與校驗報告見隨附的「驗證」目錄。</p>
+        <p class="tip">本離線版由讀者自行製作，為非官方版本，與原作者及家屬無隸屬或背書關係。
+           內容以原站為準。授權聲明的原始出處已隨程式存檔。</p>
+      </div>`);
+    bindTop();
+    document.title = "授權與來源 · 莊春江讀經站";
   }
 
   /* ---------------- 公共部分 ---------------- */
