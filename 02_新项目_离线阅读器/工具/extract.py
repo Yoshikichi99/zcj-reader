@@ -228,7 +228,8 @@ def _div_end_fallback(s, tag_start):
         k = s.find(stop, tail_start)
         if k >= 0 and (best < 0 or k < best):
             best = k
-    return best
+    # 有些页面连 </body> 都没有（如 Ni20），只能收到文本末尾
+    return best if best >= 0 else len(s)
 
 
 def find_blocks(raw, page_rel):
