@@ -116,6 +116,7 @@
     S.loaded = true;
     buildBookIdx();
     hideBoot();
+    bindCatMenu();
     window.addEventListener("hashchange", route);
     route();
     applyLangLabel();
@@ -289,7 +290,7 @@
       </div>`;
   }
 
-  /* 小部各集没有独立 index，原站用 JS 下拉菜单导航；这里用同样形式的菜单还原（悬停展开，点击进目录页） */
+  /* 小部各集没有独立 index，原站用 JS 下拉菜单导航；这里用同样形式的菜单还原 */
   function catMenu(code) {
     const items = S.menu && S.menu[code];
     if (!items || !items.length) return "";
@@ -298,6 +299,40 @@
     return '<span class="catmenu">' +
       '<a href="#/c/' + esc(code) + '" class="catmenu-btn">目 錄 ▾</a>' +
       '<div class="catmenu-list">' + links + "</div></span>";
+  }
+
+  /* 悬停有延迟、移开有宽限，点菜单外立即收起；键盘 Tab 也能展开 */
+  let cmOpenTimer = 0, cmCloseTimer = 0;
+  function cmCloseAll(except) {
+    document.querySelectorAll(".catmenu.open").forEach(w => { if (w !== except) w.classList.remove("open"); });
+  }
+  function bindCatMenu() {
+    document.addEventListener("mouseover", ev => {
+      const wrap = ev.target.closest && ev.target.closest(".catmenu");
+      if (!wrap) return;
+      clearTimeout(cmCloseTimer);
+      clearTimeout(cmOpenTimer);
+      cmOpenTimer = setTimeout(() => {
+        cmCloseAll(wrap);
+        wrap.classList.add("open");
+      }, 150);
+    });
+    document.addEventListener("mouseout", ev => {
+      const wrap = ev.target.closest && ev.target.closest(".catmenu");
+      if (!wrap) return;
+      if (ev.relatedTarget && wrap.contains(ev.relatedTarget)) return;
+      clearTimeout(cmOpenTimer);
+      clearTimeout(cmCloseTimer);
+      cmCloseTimer = setTimeout(() => wrap.classList.remove("open"), 420);
+    });
+    document.addEventListener("click", ev => {
+      const wrap = ev.target.closest && ev.target.closest(".catmenu");
+      // 点菜单按钮本身：交给 href 直接进目录页；点别处：立即收起
+      if (!wrap) cmCloseAll(null);
+    });
+    document.addEventListener("keydown", ev => {
+      if (ev.key === "Escape") cmCloseAll(null);
+    });
   }
 
   /* 静态页导航：首頁 / 目錄 / 上一節 / 下一節 */

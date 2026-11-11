@@ -119,7 +119,7 @@ for r in recs:
             k = ("PAGE", r["p"])
             texts[k].append((r["p"], zh))
             keys = [k]
-    if keys:
+    if keys or cmp_html or pali_html:
         page_model[r["p"]] = {
             "cat": cat, "num": r["num"], "nm": r["nm"],
             "keys": keys, "cmp": cmp_html, "pali": pali_html,
