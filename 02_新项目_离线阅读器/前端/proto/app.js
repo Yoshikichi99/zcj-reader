@@ -4,7 +4,7 @@
 
   const S = {
     toc: null, pages: null, pali: null, corpus: {}, notes: null, t2s: null,
-    books: {}, docs: {},
+    num: null, books: {}, docs: {},
     lang: localStorage.getItem("agama_lang") || "trad",
     loaded: false,
   };
@@ -106,6 +106,7 @@
       stage = "繁簡轉換表";
       S.t2s = await loadGz("data/t2s.json.gz").catch(() => null);
       if (S.t2s) initT2S(S.t2s);
+      S.num = await loadGz("data/num.json.gz").catch(() => null);
     } catch (err) {
       fatal("載入「" + stage + "」時出錯。", err && err.message ? err.message : String(err));
       return;
@@ -319,17 +320,20 @@
 
   function bindTop(cat) {
     const goId = $("#go-id"), goText = $("#go-text");
-    if (goId) goId.onclick = () => {
-      const v = ($("#q-id").value || "").trim().toUpperCase();
-      if (!v) return;
-      // SA0001 / SN0544 形式
-      const catCode = (v.match(/^[A-Z]+/) || [""])[0];
-      if (catCode && /^\d+$/.test(v.replace(catCode, ""))) {
-        location.hash = "#/p/" + catCode + "/" + v;
-      } else {
-        location.hash = "#/s/" + encodeURIComponent(cat || "") + "/" + encodeURIComponent(v);
+    const jump = () => {
+      const raw = ($("#q-id").value || "").trim();
+      if (!raw) return;
+      const pid = resolveNumJump(cat || "", "tz", raw);
+      if (pid) {
+        location.hash = "#/p/" + pid;
+        return;
       }
+      showToast("找不到經號：" + raw + "（可試 SA0001、SN22.15）");
+      setTimeout(hideToast, 2800);
     };
+    if (goId) goId.onclick = jump;
+    const idBox = $("#q-id");
+    if (idBox) idBox.onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); jump(); } };
     if (goText) goText.onclick = () => {
       const v = ($("#q-text").value || "").trim();
       if (v) location.hash = "#/s/" + encodeURIComponent(cat || "") + "/" + encodeURIComponent(v);
@@ -443,24 +447,69 @@
     return "";
   }
 
+  /* ---------------- 经号跳转（大正本 / 正聞本 / 佛光本 / 本部经号） ---------------- */
+  const NUM_SCHEME = { dm: "tz", mx: "zw", fx: "fg", sn: "tz", an: "tz" };
+
+  function numSchemeOf(action) {
+    const m = (action || "").toLowerCase().match(/(?:^|\/)(dm|mx|fx|sn|an)\.(?:html?|php)$/);
+    return m ? NUM_SCHEME[m[1]] : null;
+  }
+
+  /* 全角数字、句点、空白归一；纯数字按段去前导零 */
+  function normNumKey(s) {
+    let t = String(s == null ? "" : s)
+      .replace(/[\uFF10-\uFF19]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+      .replace(/[．。]/g, ".")
+      .replace(/\s+/g, "");
+    if (/^\d+(?:\.\d+)*$/.test(t)) {
+      t = t.split(".").map(x => String(parseInt(x, 10))).join(".");
+    }
+    return t;
+  }
+
+  function lookupNum(cat, scheme, key) {
+    const bucket = S.num && S.num[cat] && S.num[cat][scheme];
+    return bucket && bucket[key] ? bucket[key] : null;
+  }
+
+  /* 依次尝试：完整页面 id → 带栏目前缀的号（SN22.15）→ 当前栏目 + 方案 */
+  function resolveNumJump(cat, scheme, raw) {
+    const t = normNumKey(raw);
+    if (!t) return null;
+    if (S.pages && S.pages[cat + "/" + t.toUpperCase()]) return cat + "/" + t.toUpperCase();
+    const m = t.match(/^([A-Za-z]{2})(\d+(?:\.\d+)*)$/);
+    if (m) {
+      const hit = lookupNum(m[1].toUpperCase(), "tz", normNumKey(m[2]));
+      if (hit) return hit;
+    }
+    return lookupNum(cat, scheme, t);
+  }
+
   function viewCat(code) {
     const cat = S.toc.cats.find(c => c.id === code);
     if (!cat) return viewHome();
     if (cat.page) {
       app().innerHTML = '<div class="orig">' + trCached("cat:" + code, cat.page) + "</div>";
       document.title = (cat.n || code) + " · 莊春江讀經站";
-      // 栏目页的检索框：接到本栏目全文搜索
+      // 栏目页表单：经号框直接跳转，检索框走本栏目全文搜索
       document.querySelectorAll(".orig form").forEach(f => {
         f.addEventListener("submit", ev => {
           ev.preventDefault();
-          const action = (f.getAttribute("action") || "").toLowerCase();
-          if (/dm\.html|mx\.php|fx\.php/.test(action)) {
-            location.hash = "#/notice";
-            return;
-          }
           const inp = f.querySelector('input[name="keyword"]') || f.querySelector('input[type="text"]');
           const v = inp ? inp.value.trim() : "";
           if (!v) return;
+          const scheme = numSchemeOf(f.getAttribute("action"));
+          if (scheme) {
+            const pid = resolveNumJump(code, scheme, v);
+            if (pid) {
+              location.hash = "#/p/" + pid;
+              return;
+            }
+            if (inp) inp.select();
+            showToast("找不到經號：" + v);
+            setTimeout(hideToast, 2600);
+            return;
+          }
           location.hash = "#/s/" + encodeURIComponent(code) + "/" + encodeURIComponent(v);
         });
       });
