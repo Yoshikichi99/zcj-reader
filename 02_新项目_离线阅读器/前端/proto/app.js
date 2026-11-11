@@ -612,7 +612,8 @@
     const series = new Set(keys.map(seriesOfKey));
     const hasNorth = ["SA", "MA", "DA", "AA", "ZA", "OTHER"].some(x => series.has(x));
     const hasSouth = ["SN", "AN", "MN", "DN"].some(x => series.has(x));
-    return { nm, content, paliHtml, cmpHtml, cat, num, both: hasNorth && hasSouth, hasPali: !!paliHtml };
+    return { nm, content, paliHtml, cmpHtml, cat, num, both: hasNorth && hasSouth, hasPali: !!paliHtml,
+      cmpOnly: !content && !!cmpHtml };
   }
 
   function paneHtml(title, body, foldable) {
@@ -665,7 +666,10 @@
       document.title = d.nm + " · 莊春江讀經站";
       return;
     }
-    const full = d.content + (d.paliHtml ? '<div class="pali">' + d.paliHtml + "</div>" : "") +
+    const cmpNote = d.cmpOnly
+      ? '<div class="cmpnote">本頁在原站只有「南北傳對讀」，沒有獨立的漢譯經文；下方即為對讀內容。</div>'
+      : "";
+    const full = cmpNote + d.content + (d.paliHtml ? '<div class="pali">' + d.paliHtml + "</div>" : "") +
       (d.cmpHtml ? '<div class="comp">' + d.cmpHtml + "</div>" : "");
     let left, right, leftTitle, rightTitle;
     if (d.both) {
@@ -673,7 +677,7 @@
       leftTitle = "拉動本欄右邊滑桿，可選擇「任一經文」";
       rightTitle = "拉動本欄右邊滑桿，可選擇「對讀經文」(點右端»隱藏本欄)";
     } else {
-      left = d.content + (d.cmpHtml ? '<div class="comp">' + d.cmpHtml + "</div>" : "");
+      left = cmpNote + d.content + (d.cmpHtml ? '<div class="comp">' + d.cmpHtml + "</div>" : "");
       right = d.paliHtml ? '<div class="pali">' + d.paliHtml + "</div>" : "";
       leftTitle = "漢譯經文";
       rightTitle = "巴利語經文(點右端»隱藏本欄)";
