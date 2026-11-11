@@ -64,9 +64,15 @@ audio{width:100%%;max-width:640px}
 <div class="note">共 %d 段錄音。文件已按原站標題命名，括號內為原站檔名。<br>
 本包與主程序分開放置，不占離線閱讀器體積。</div>
 %s
+<div class="note">內容授權：創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際
+（<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant">授權說明</a>）·
+作者：莊春江 · 詳見同目錄 授權說明.txt</div>
 </div></body></html>""" % (len(files), "\n".join(rows))
 
 io.open(os.path.join(OUT, "音频.html"), "w", encoding="utf-8").write(html)
 io.open(os.path.join(OUT, "文件对照.txt"), "w", encoding="utf-8").write("\n".join(mapping))
+
+import license_note
+license_note.write_notice(OUT)
 total = sum(os.path.getsize(os.path.join(MP3, f)) for f in os.listdir(MP3))
 print("音频包：%d 个，%.1f MB；有标题 %d/%d" % (len(files), total / 1048576, len(titles), len(files)))

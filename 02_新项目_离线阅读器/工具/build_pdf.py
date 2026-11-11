@@ -27,7 +27,11 @@ for rel, name in BOOKS:
     lines.append("%s（原站 %s）" % (name, os.path.basename(rel)))
     print("copy", rel, "->", name)
 
-lines += ["", "本包与主程序分开，不影响离线阅读器的体积。"]
+lines += ["", "本包与主程序分开，不影响离线阅读器的体积。",
+          "", "内容授权：CC BY-NC-SA 4.0，详见同目录 授權說明.txt。"]
 io.open(os.path.join(OUT, "说明.txt"), "w", encoding="utf-8").write("\n".join(lines))
+
+import license_note
+license_note.write_notice(OUT)
 total = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT) if f.endswith(".pdf"))
 print("PDF 包：%d 个，%.1f MB" % (len(BOOKS), total / 1048576))
