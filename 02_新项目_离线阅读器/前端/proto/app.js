@@ -235,8 +235,7 @@
         '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>' +
         tr(" · 作者：莊春江 · ") +
         '<a href="#/license">' + tr("授權與來源") + "</a>" +
-        tr(" · 非官方離線版 · 聯絡：") +
-        '<a href="mailto:Zhuran_77@foxmail.com">Zhuran_77@foxmail.com</a>' +
+        tr(" · 非官方離線版") +
       "</div>";
   }
 
@@ -264,7 +263,8 @@
           <li>音頻與 PDF 依標題重新命名，另作獨立擴展包；</li>
           <li>原站連結改寫為本程式的內部路由。</li>
         </ul>
-        <p>不涉及文字內容的刪改；抽取與校驗報告見隨附的「驗證」目錄。</p>
+        <p>不涉及文字內容的刪改；抽取與校驗報告見專案倉庫的「驗證」目錄
+           （供開發者查閱，不隨程式分發）。</p>
         <h2>聯絡與回報</h2>
         <p>若認為內容侵權，或發現內容錯誤、程式問題，請來信：
            <a href="mailto:Zhuran_77@foxmail.com">Zhuran_77@foxmail.com</a>；核實後即修正或移除。</p>
