@@ -299,3 +299,6 @@ a.visited, .orig a.visited, .sitenav a.visited, .numgrid a.visited, .pager a.vis
 /* ---------- 仅有對讀的页面提示 ---------- */
 .cmpnote{margin:10px 0 4px;padding:8px 12px;border-left:3px solid #b9d49a;background:#F7FFEF;
   color:#5c5c5c;font-size:10.5pt;line-height:1.8}
+
+/* 授权页小字说明 */
+.license .dim{color:#888;font-size:10pt;line-height:1.7}

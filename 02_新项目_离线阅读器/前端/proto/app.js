@@ -235,7 +235,8 @@
         '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>' +
         tr(" · 作者：莊春江 · ") +
         '<a href="#/license">' + tr("授權與來源") + "</a>" +
-        tr(" · 非官方離線版") +
+        tr(" · 非官方離線版 · 聯絡：") +
+        '<a href="mailto:Zhuran_77@foxmail.com">Zhuran_77@foxmail.com</a>' +
       "</div>";
   }
 
@@ -246,12 +247,16 @@
         <p>本站經文、譯文、註釋、巴利原文、音頻與 PDF，均由<strong>莊春江</strong>老師翻譯、整理與著述，
            現由家屬決議採創用 CC 授權開放分享。</p>
         <table class="lic">
-          <tr><th>作者</th><td>莊春江（家屬授權開放分享）</td></tr>
+          <tr><th>內容作者</th><td>莊春江（家屬授權開放分享）</td></tr>
           <tr><th>來源</th><td><a href="https://agama.buddhason.org/" target="_blank" rel="noopener">https://agama.buddhason.org/</a></td></tr>
-          <tr><th>授權</th><td><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際</a></td></tr>
+          <tr><th>內容授權</th><td><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">創用 CC 姓名標示-非商業性-相同方式分享 4.0 國際</a><br>
+              <span class="dim">可自由複製、改作、再散布；須標示作者與來源，不得商業使用，衍生作品同條款。</span></td></tr>
+          <tr><th>程式授權</th><td><strong>MIT</strong>（抽取腳本、前端、Windows 殼）<br>
+              <span class="dim">可自由使用、修改、商用與再散布，保留版權聲明即可。</span></td></tr>
+          <tr><th>文件授權</th><td><a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" target="_blank" rel="noopener">創用 CC 姓名標示 4.0 國際</a></td></tr>
         </table>
-        <p>依授權條款，您可以自由複製、改作與再散布，但須標示作者與來源、不得用於商業目的，
-           且衍生作品須以相同條款分享。</p>
+        <p>內容與派生資料之所以不能跟著程式一起放寬，是因為版權屬於原作者、家屬授權為
+           CC BY-NC-SA 4.0，其中「非商業性」與「相同方式分享」不能被更寬鬆的條款替代。</p>
         <h2>本離線版對內容的改動</h2>
         <ul>
           <li>經文依系列拆分、去除重複，並以 gzip 壓縮存放；</li>
@@ -260,6 +265,9 @@
           <li>原站連結改寫為本程式的內部路由。</li>
         </ul>
         <p>不涉及文字內容的刪改；抽取與校驗報告見隨附的「驗證」目錄。</p>
+        <h2>聯絡與回報</h2>
+        <p>若認為內容侵權，或發現內容錯誤、程式問題，請來信：
+           <a href="mailto:Zhuran_77@foxmail.com">Zhuran_77@foxmail.com</a>；核實後即修正或移除。</p>
         <p class="tip">本離線版由讀者自行製作，為非官方版本，與原作者及家屬無隸屬或背書關係。
            內容以原站為準。授權聲明的原始出處已隨程式存檔。</p>
       </div>`);
