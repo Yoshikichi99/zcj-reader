@@ -108,14 +108,16 @@ td,th{border:1px solid #cfe0b8;padding:4px 8px;vertical-align:top}
 }
 #notediv.show{display:block}
 
-/* ---------- 简繁开关（顶栏右侧） ---------- */
-.titlebar{position:relative}
+/* ---------- 简繁开关（顶栏 / 导航条 / 页眉共用） ---------- */
 .langtoggle{
-  position:absolute;right:8px;top:50%;transform:translateY(-50%);
-  font-size:11pt;color:var(--blue);border:1px solid #BBFF8E;border-radius:3px;
-  padding:1px 7px;background:var(--bg);
+  display:inline-block;font-size:10.5pt;line-height:1.5;color:var(--blue);
+  border:1px solid #BBFF8E;border-radius:3px;padding:1px 7px;background:var(--bg);
 }
 .langtoggle:hover{background:#E8F7D8}
+.titlebar{position:relative}
+.titlebar .langtoggle{position:absolute;right:8px;top:50%;transform:translateY(-50%)}
+/* 首页/栏目页没有顶栏，用一条极薄的页眉放开关 */
+.pagebar{display:flex;justify-content:flex-end;padding:2px 8px 0}
 
 /* ---------- 首页 ---------- */
 .home{padding:10px 8px 40px;text-align:center}
@@ -240,11 +242,12 @@ html,body{background:#EFFFDE}
 }
 /* ---------- 静态页导航（首頁/目錄/上一節/下一節） ---------- */
 .sitenav{
-  width:100%;margin:0 auto;padding:8px 20px;text-align:center;
-  font-size:16pt;color:#222;
+  width:100%;margin:0 auto;padding:8px 64px 8px 20px;text-align:center;
+  font-size:16pt;color:#222;position:relative;
 }
 .sitenav a{margin-right:22px;color:#222}
 .sitenav.bottom{border-top:1px solid #cfe0b8;margin-top:14px;padding-top:10px}
+.navlang{position:absolute;right:8px;top:50%;transform:translateY(-50%)}
 /* ---------- 原站内容的基础重置（等效 YUI reset，只在 .orig 内生效） ---------- */
 .orig p, .orig div, .orig li, .orig h1, .orig h2, .orig h3, .orig h4 {
   margin:0; padding:0; font-weight:normal; font-style:normal;

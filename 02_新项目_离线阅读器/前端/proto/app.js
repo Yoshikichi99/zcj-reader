@@ -249,7 +249,7 @@
   }
 
   function viewLicense() {
-    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a></div>' + tr(
+    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a>' + langBtn() + "</div>" + tr(
       `<div class="cat license">
         <h1>內容授權與來源</h1>
         <p>本站經文、譯文、註釋、巴利原文、音頻與 PDF，均由<strong>莊春江</strong>老師翻譯、整理與著述，
@@ -295,7 +295,7 @@
     const next = o.next ? '<a href="#/p/' + esc(o.next) + '">下一經 »</a>' : "";
     return `
       <div class="titlebar">${home}　${cat || back}　${prev}　${next}` +
-        `<a href="#" id="langtoggle" class="langtoggle">${S.lang === "simp" ? "繁體" : "简体"}</a>` +
+        langBtn() +
       `</div>
       <div class="searchrow">
         <form onsubmit="return false">
@@ -360,10 +360,13 @@
   function siteNav(ctx, bottom) {
     const c = ctx || {};
     return `<div class="sitenav${bottom ? " bottom" : ""}">
+      <span class="navlinks">
       <a href="#/">首頁</a>
       ${c.toc ? '<a href="' + c.toc + '">目錄</a>' : ""}
       ${c.prevHref ? '<a href="' + c.prevHref + '">« 上一節</a>' : ""}
       ${c.nextHref ? '<a href="' + c.nextHref + '">下一節 »</a>' : ""}
+      </span>
+      ${bottom ? "" : '<span class="navlang">' + langBtn() + "</span>"}
     </div>`;
   }
 
@@ -425,7 +428,8 @@
 
   function viewHome() {
     if (S.toc && S.toc.home) {
-      app().innerHTML = '<div class="orig home">' + trCached("home", S.toc.home) + "</div>";
+      app().innerHTML = '<div class="pagebar">' + langBtn() + "</div>" +
+        '<div class="orig home">' + trCached("home", S.toc.home) + "</div>";
       document.title = "莊春江讀經站 · 離線版";
       fitHomeImages();
       return;
@@ -586,7 +590,8 @@
     if (!cat) return viewHome();
     const plain = (cat.page || "").replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
     if (cat.page && plain.length > 40) {
-      app().innerHTML = '<div class="orig catpage">' + trCached("cat:" + code, cat.page) + "</div>";
+      app().innerHTML = '<div class="pagebar">' + langBtn() + "</div>" +
+        '<div class="orig catpage">' + trCached("cat:" + code, cat.page) + "</div>";
       document.title = (cat.n || code) + " · 莊春江讀經站";
       // 栏目页表单：经号框直接跳转，检索框走本栏目全文搜索
       document.querySelectorAll(".orig form").forEach(f => {
@@ -1031,7 +1036,7 @@
   /* ---------------- 未实装功能提示 ---------------- */
   function viewNotice() {
     // 提示页不是阅读页，不带头部的经号/检索栏，只留「首頁」返回
-    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a></div>' +
+    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a>' + langBtn() + "</div>" +
       `<div class="cat notice">
         <h1>此功能未實裝</h1>
         <p>本離線版未包含這項功能。</p>
@@ -1172,15 +1177,18 @@
     document.title = "檢索：" + q;
   }
 
-  /* ---------------- 简繁开关（顶栏右侧） ---------------- */
+  /* ---------------- 简繁开关（顶栏 / 导航条 / 页眉共用） ---------------- */
+  function langBtn() {
+    return '<a href="#" class="langtoggle">' + (S.lang === "simp" ? "繁體" : "简体") + "</a>";
+  }
   function applyLangLabel() {
-    document.querySelectorAll("#langtoggle").forEach(a => {
+    document.querySelectorAll(".langtoggle").forEach(a => {
       a.textContent = S.lang === "simp" ? "繁體" : "简体";
     });
   }
-  // 顶栏每次翻页都重绘，用事件委托绑一次即可
+  // 每种页面的顶栏都会重绘，用事件委托绑一次
   document.addEventListener("click", ev => {
-    const a = ev.target.closest && ev.target.closest("#langtoggle");
+    const a = ev.target.closest && ev.target.closest(".langtoggle");
     if (!a) return;
     ev.preventDefault();
     ev.stopPropagation();
