@@ -3,7 +3,8 @@
 import os, io, random, collections
 from lxml import html as LH
 
-ROOT = r"D:\Deepseek\Fatfish Workplace\agama.buddhason.org_simp"
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ROOT = os.path.join(BASE, "源数据", "agama.buddhason.org_simp")
 random.seed(7)
 
 pages = []

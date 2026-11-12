@@ -2,8 +2,9 @@
 """勘察页面模板：给每个页面打特征标签，统计有多少种结构。"""
 import os, re, io, json, collections
 
-ROOT = r"D:\Deepseek\Fatfish Workplace\agama.buddhason.org_simp"
-OUT = r"D:\Deepseek\Fatfish Workplace\新项目\_survey.tsv"
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+ROOT = os.path.join(BASE, "源数据", "agama.buddhason.org_simp")
+OUT = os.path.join(BASE, "数据", "_survey.tsv")
 
 def has(s, pat):
     return 1 if re.search(pat, s, re.I | re.S) else 0
