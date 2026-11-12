@@ -69,7 +69,7 @@ cd 02_新项目_离线阅读器\构建\Windows
 | 范围 | 例子 | 许可 |
 |---|---|---|
 | **软件代码** | `工具/`、前端 JS/CSS、`构建/Windows/src/`、`pack.ps1` | **MIT**（[LICENSE](LICENSE)） |
-| **自写文档** | README、声明、目录说明、日志、验证报告 | **CC BY 4.0**（[LICENSE-DOCS](LICENSE-DOCS)） |
+| **自写文档** | README、声明、日志、验证报告 | **CC BY 4.0**（[LICENSE-DOCS](LICENSE-DOCS)） |
 | **内容与派生数据** | `站点_纯净版/`、`数据/`、`前端/data/`、音频/PDF 扩展包 | **CC BY-NC-SA 4.0**（[LICENSE-CONTENT](LICENSE-CONTENT)） |
 
 - 代码用 MIT：可自由使用、修改、商用、闭源分发，保留版权声明即可；
