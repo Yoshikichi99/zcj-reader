@@ -45,14 +45,15 @@ cd 02_新项目_离线阅读器\构建\Windows
 
 > 构建的输入是 `02_新项目_离线阅读器/源数据/`（镜像工作副本，未入库），需先从 `01_旧项目_庄春江镜像/站点_简体版/` 复制。
 
-## 验证原型（Release 附件）
+## 下载（Release）
 
-校对「抽取 → 语料库 → 页面拼装」一致性的「全经」页面，作为 Release 附件发布
-（共 15 个 HTML，打包 5 MB，不进仓库）：
+- [v1.0 · 庄春江工作站离线版（Windows）](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0)
+  —— 单文件 exe（含使用说明）、三份 LICENSE 与声明
 
-- [v1.0-prototypes · 验证用原型页面](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0-prototypes)
+## 验证原型
 
-包含语料库 v2 的九部「全经」拼接页、SA/SN 原型页与三个单页样例，附说明与授权声明。
+「抽取 → 语料库 → 页面拼装」的对照页（语料库 v2 九部全经、SA/SN 原型、三个单页样例）
+随仓库放在 `02_新项目_离线阅读器/验证/`，不单独发 Release。
 
 ## 进度
 
