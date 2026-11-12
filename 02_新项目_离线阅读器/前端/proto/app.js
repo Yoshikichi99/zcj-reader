@@ -2,6 +2,9 @@
 (function () {
   "use strict";
 
+  // 关闭浏览器的「恢复上次滚动位置」，翻页统一由 route() 归零
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
   const S = {
     toc: null, pages: null, pali: null, corpus: {}, notes: null, t2s: null,
     num: null, menu: null, books: {}, docs: {},
@@ -205,6 +208,12 @@
   }
 
   function route() {
+    // 新页面一律回到顶部：hash 路由只替换 #app 的内容，浏览器不会自己归位。
+    // 必须在 render 之前滚，否则会把 bindAnchors() 的页内锚点跳转顶掉。
+    window.scrollTo(0, 0);
+    // 注释窗在 #app 外面，不主动关会一直浮在新页面上
+    const pop = document.getElementById("notediv");
+    if (pop) pop.classList.remove("show");
     render();
     markVisited();
   }
@@ -231,11 +240,11 @@
     if (!el) return;
     el.innerHTML =
       '<div class="licensebar">' +
-        tr("內容授權：") +
-        '<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>' +
-        tr(" · 作者：莊春江 · ") +
-        '<a href="#/license">' + tr("授權與來源") + "</a>" +
-        tr(" · 非官方離線版") +
+        '<span class="nb">' + tr("內容授權：") + "</span>" +
+        '<a class="nb" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a>' +
+        '<span class="nb">' + tr(" · 作者：莊春江 · ") + "</span>" +
+        '<a class="nb" href="#/license">' + tr("授權與來源") + "</a>" +
+        '<span class="nb">' + tr(" · 非官方離線版") + "</span>" +
       "</div>";
   }
 
@@ -285,7 +294,9 @@
     const prev = o.prev ? '<a href="#/p/' + esc(o.prev) + '">« 上一經</a>' : "";
     const next = o.next ? '<a href="#/p/' + esc(o.next) + '">下一經 »</a>' : "";
     return `
-      <div class="titlebar">${home}　${cat || back}　${prev}　${next}</div>
+      <div class="titlebar">${home}　${cat || back}　${prev}　${next}` +
+        `<a href="#" id="langtoggle" class="langtoggle">${S.lang === "simp" ? "繁體" : "简体"}</a>` +
+      `</div>
       <div class="searchrow">
         <form onsubmit="return false">
           <span>經號：</span>
@@ -414,12 +425,38 @@
 
   function viewHome() {
     if (S.toc && S.toc.home) {
-      app().innerHTML = '<div class="orig">' + trCached("home", S.toc.home) + "</div>";
+      app().innerHTML = '<div class="orig home">' + trCached("home", S.toc.home) + "</div>";
       document.title = "莊春江讀經站 · 離線版";
+      fitHomeImages();
       return;
     }
     app().innerHTML = '<div class="cat"><p>首頁資料缺失</p></div>';
   }
+
+  /**
+   * 首页是原站 600px 宽的「海报」：表格被压到屏宽后，
+   * 小图（如 摘記 85px）比格子还小、不会被 max-width 缩，于是显得比邻居大。
+   * 这里按 600px 设计稿等比缩放所有图片，保证同一张海报里的图大小关系不变。
+   */
+  function fitHomeImages() {
+    const box = document.querySelector(".home");
+    if (!box) return;
+    const k = Math.min(1, (document.documentElement.clientWidth - 12) / 600);
+    box.querySelectorAll("img").forEach(img => {
+      const apply = () => {
+        const w = img.naturalWidth;
+        if (!w) return;
+        img.style.width = Math.round(w * k) + "px";
+        img.style.height = "auto";
+        img.style.maxWidth = "100%";
+      };
+      if (img.complete) apply();
+      else img.addEventListener("load", apply, { once: true });
+    });
+  }
+  window.addEventListener("resize", () => {
+    if (document.querySelector(".home")) fitHomeImages();
+  });
 
   /* ---------------- 上一篇 / 下一篇 ---------------- */
   const SEQ = {};
@@ -549,7 +586,7 @@
     if (!cat) return viewHome();
     const plain = (cat.page || "").replace(/<[^>]*>/g, "").replace(/&nbsp;/g, " ").trim();
     if (cat.page && plain.length > 40) {
-      app().innerHTML = '<div class="orig">' + trCached("cat:" + code, cat.page) + "</div>";
+      app().innerHTML = '<div class="orig catpage">' + trCached("cat:" + code, cat.page) + "</div>";
       document.title = (cat.n || code) + " · 莊春江讀經站";
       // 栏目页表单：经号框直接跳转，检索框走本栏目全文搜索
       document.querySelectorAll(".orig form").forEach(f => {
@@ -574,6 +611,8 @@
         });
       });
       bindAnchors();
+      layoutCatPage(document.querySelector(".catpage"));
+      bindCatNotes(document.querySelector(".catpage") || document.body);
       return;
     }
     if ((S.menu && S.menu[code]) || (cat.items && cat.items.length)) {
@@ -581,6 +620,149 @@
       return;
     }
     app().innerHTML = '<div class="cat"><h1>' + esc(cat.n || code) + '</h1><p>此欄目無目錄頁</p></div>';
+  }
+
+  /* ---------------- 栏目页窄屏适配 ---------------- */
+  /**
+   * 栏目页（SA 的 index 等）是从原站整页搬来的 800/900px 排版，
+   * 窄屏上要做四件事：
+   * 1. 头图拆分：原图 828x77，标题只占中间一段、右边还烤着「回 首 頁」，
+   *    整张缩到屏宽后标题看着很小。按「有墨的列」切成两张图，
+   *    标题铺满屏宽，回首页单独放大；
+   * 2. 内联字号（凡例 24pt / 说明 22pt / 表单 20pt）统一缩小；
+   * 3. 经号数字格反过来放大到 16px，方便点按；
+   * 4. 凡例里的负缩进/左缩进会顶出屏幕，清零。
+   */
+  const CAT_HEAD_CACHE = {};
+
+  function layoutCatPage(box) {
+    if (!box || window.innerWidth > 760) return;
+
+    const head = box.querySelector('img[src*="/title0"]');
+    if (head && !head.dataset.split) {
+      head.dataset.split = "1";
+      // 图片可能还没解码完，naturalWidth 为 0 时等 load 再拆
+      if (head.complete && head.naturalWidth) splitCatHead(head);
+      else head.addEventListener("load", () => splitCatHead(head), { once: true });
+    }
+
+    box.querySelectorAll('[style*="font-size"]').forEach(el => {
+      const m = /^([\d.]+)pt$/.exec(el.style.fontSize || "");
+      if (!m) return;
+      const pt = parseFloat(m[1]);
+      if (el.closest('td[width="10%"]')) { el.style.fontSize = "16px"; return; }
+      if (pt >= 23) el.style.fontSize = "16px";
+      else if (pt >= 19) el.style.fontSize = "14px";
+      else if (pt >= 16) el.style.fontSize = "13px";
+    });
+
+    box.querySelectorAll("form").forEach(f => {
+      f.querySelectorAll("span").forEach(s => {
+        if (parseFloat(s.style.fontSize) >= 16) s.style.fontSize = "14px";
+      });
+      // 把「标签」和「输入框+按钮」拆成两行：三个经号栏才能横向对齐
+      const span = f.querySelector("span");
+      if (span) {
+        const nodes = [...span.childNodes];
+        const firstInput = nodes.findIndex(n => n.nodeType === 1 && n.tagName === "INPUT");
+        if (firstInput > 0) {
+          const label = document.createElement("div");
+          label.className = "flabel";
+          nodes.slice(0, firstInput).forEach(n => label.appendChild(n));
+          const ctrl = document.createElement("div");
+          ctrl.className = "fctrl";
+          nodes.slice(firstInput).forEach(n => ctrl.appendChild(n));
+          span.appendChild(label);
+          span.appendChild(ctrl);
+          f.classList.add("stack");
+        }
+      }
+      f.querySelectorAll('input[type="text"]').forEach(i => {
+        i.style.fontSize = "12px";
+        i.style.width = "4.5em";
+        i.style.padding = "3px 4px";
+      });
+      f.querySelectorAll('input[type="submit"]').forEach(i => {
+        i.style.fontSize = "12px";
+        i.style.padding = "4px 10px";
+      });
+    });
+
+    box.querySelectorAll('p[style*="margin-left"], p[style*="text-indent"]').forEach(p => {
+      p.style.marginLeft = "0";
+      p.style.textIndent = "0";
+      p.style.marginTop = "4px";
+    });
+  }
+
+  function splitCatHead(img) {
+    const src = img.getAttribute("src");
+    if (CAT_HEAD_CACHE[src]) { applyCatHead(img, CAT_HEAD_CACHE[src]); return; }
+    try {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const cv = document.createElement("canvas");
+      cv.width = w; cv.height = h;
+      const ctx = cv.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0);
+
+      const px = ctx.getImageData(0, 0, w, h).data;
+      const bg = [px[0], px[1], px[2]];
+      const ink = new Array(w).fill(0);
+      for (let x = 0; x < w; x++) {
+        let n = 0;
+        for (let y = 0; y < h; y += 2) {
+          const i = (y * w + x) * 4;
+          if (Math.abs(px[i] - bg[0]) + Math.abs(px[i + 1] - bg[1]) + Math.abs(px[i + 2] - bg[2]) > 90) n++;
+        }
+        ink[x] = n;
+      }
+
+      // 有墨的列合并成段（允许 10px 空隙，避免字与字之间被切成碎片）
+      const runs = [];
+      let start = -1, gap = 0;
+      for (let x = 0; x < w; x++) {
+        if (ink[x] > 0) { if (start < 0) start = x; gap = 0; }
+        else if (start >= 0) { if (++gap > 10) { runs.push([start, x - gap]); start = -1; gap = 0; } }
+      }
+      if (start >= 0) runs.push([start, w - 1]);
+
+      const wide = runs.filter(r => r[1] - r[0] > w * 0.15);
+      // 「回 首 頁」只有约 60px 宽（<15%），不能按宽度筛，改成「靠右的最后一段」
+      const homeRuns = runs.filter(r => r[0] > w * 0.72 && r[1] - r[0] > 20);
+      const home = homeRuns.length ? homeRuns[homeRuns.length - 1] : null;
+      if (!home || !wide.length) { applyCatHead(img, null); return; }
+
+      // 标题取「第一段有墨处 → 回首页前最后一段有墨处」：
+      // 这样标题内部的字距空隙不会把它切碎，也不会把中间的大片空白带进裁切。
+      const titleStart = runs[0][0];
+      const beforeHome = runs.filter(r => r[1] < home[0] - 10);
+      const titleEnd = (beforeHome.length ? beforeHome[beforeHome.length - 1] : runs[0])[1];
+      if (titleEnd - titleStart < w * 0.2) { applyCatHead(img, null); return; }
+      const pad = 3;
+      const crop = (x0, x1) => {
+        const x = Math.max(0, x0 - pad);
+        const cw = Math.min(w, x1 + pad) - x;
+        const c2 = document.createElement("canvas");
+        c2.width = cw; c2.height = h;
+        c2.getContext("2d").drawImage(cv, x, 0, cw, h, 0, 0, cw, h);
+        return c2.toDataURL("image/jpeg", 0.92);
+      };
+      CAT_HEAD_CACHE[src] = { title: crop(titleStart, titleEnd), home: crop(home[0], home[1]) };
+      applyCatHead(img, CAT_HEAD_CACHE[src]);
+    } catch (e) {
+      // canvas 失败（例如跨域/内存）：保持原图，不影响阅读
+    }
+  }
+
+  function applyCatHead(img, crops) {
+    const td = img.closest("td");
+    if (!td) return;
+    if (!crops) { img.style.width = "100%"; return; }
+    td.innerHTML =
+      '<div class="cathead">' +
+        '<a class="ttl" href="#/"><img src="' + crops.title + '" alt=""></a>' +
+        '<a class="home-link" href="#/"><img src="' + crops.home + '" alt="回首页"></a>' +
+      "</div>";
   }
 
   /* 没有 index.htm 的小部集：按原站下拉菜单（或条目）生成列表页 */
@@ -679,8 +861,31 @@
     const cmpNote = d.cmpOnly
       ? '<div class="cmpnote">本頁在原站只有「南北傳對讀」，沒有獨立的漢譯經文；下方即為對讀內容。</div>'
       : "";
-    const full = cmpNote + d.content + (d.paliHtml ? '<div class="pali">' + d.paliHtml + "</div>" : "") +
-      (d.cmpHtml ? '<div class="comp">' + d.cmpHtml + "</div>" : "");
+    const narrow = window.matchMedia && window.matchMedia("(max-width:760px)").matches;
+
+    // 手机端一律单栏，顺序固定为：漢譯 → 南北傳經文比對 → 巴利語
+    // （南传页原来被拆成「漢譯／巴利」两栏，巴利要另开一栏还要滚动，反而难读）
+    if (narrow) {
+      const sec = (label, html, cls) => html
+        ? '<div class="sec ' + cls + '"><div class="sec-h">' + label + "</div>" + html + "</div>"
+        : "";
+      const body =
+        sec("漢譯經文", cmpNote + d.content, "sec-zh") +
+        sec("南北傳經文比對", d.cmpHtml, "sec-cmp") +
+        sec("巴利語經文", d.paliHtml, "sec-pali");
+      app().innerHTML = topBar({ cat: d.cat, prev: (SEQ[pidRaw] || {}).prev, next: (SEQ[pidRaw] || {}).next }) +
+        '<div class="panes"><div class="pane" style="flex:1"><div class="pb">' + tr(body) + "</div></div></div>";
+      bindTop(d.cat);
+      bindNotes();
+      bindLinks();
+      document.title = d.nm + " · 莊春江讀經站";
+      try { localStorage.setItem("last_page", pidRaw); } catch (e) { }
+      return;
+    }
+
+    const full = cmpNote + d.content +
+      (d.cmpHtml ? '<div class="comp">' + d.cmpHtml + "</div>" : "") +
+      (d.paliHtml ? '<div class="pali">' + d.paliHtml + "</div>" : "");
     let left, right, leftTitle, rightTitle;
     if (d.both) {
       left = full; right = full;
@@ -725,10 +930,50 @@
     const pop = $("#notediv");
     pop.innerHTML = tr(html);
     pop.classList.add("show");
-    const w = Math.min(700, window.innerWidth - 40);
+    const m = 10;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = Math.min(700, vw - 2 * m);
     pop.style.width = w + "px";
-    pop.style.left = Math.max(10, Math.min(x + 12, window.innerWidth - w - 10)) + "px";
-    pop.style.top = Math.max(10, Math.min(y + 16, window.innerHeight - 200)) + "px";
+    pop.style.left = Math.max(m, Math.min(x + 12, vw - w - m)) + "px";
+    // 先把窗口放到顶部量出真实高度，再决定 top。
+    // 原站只给了 200px 下边距，注释一长就跑到屏幕外、被裁掉。
+    pop.style.top = "0px";
+    const h = pop.offsetHeight;
+    pop.style.top = Math.max(m, Math.min(y + 16, vh - h - m)) + "px";
+
+    // 注释里的站内链接（如 ../book/bb/bb20.htm）在离线版里没有对应 URL，
+    // 改写成内部路由；点完顺手关掉注释窗。
+    pop.querySelectorAll("a[href]").forEach(a => {
+      const href = a.getAttribute("href");
+      if (/^https?:|^#\//i.test(href)) return;
+      const clean = href.replace(/^(\.\.?\/)+/, "").replace(/\.htm.*$/, "");
+      if (!clean) return;
+      a.removeAttribute("target");
+      a.addEventListener("click", ev => {
+        ev.preventDefault();
+        pop.classList.remove("show");
+        location.hash = "#/p/" + clean;
+      });
+    });
+  }
+
+  /* 栏目页「博士比丘的觀點 / 欄位操作」：原站用 onMouseover 弹出 #note1/#note2，
+     脚本被剥离后成了死链接，这里改成点击弹出。 */
+  function bindCatNotes(box) {
+    box.querySelectorAll('a.link, a[id^="link"]').forEach(a => {
+      if (a.dataset.noteBound) return;
+      a.dataset.noteBound = "1";
+      a.style.cursor = "pointer";
+      a.addEventListener("click", ev => {
+        ev.preventDefault();
+        // 阻止冒泡：否则会被「点空白关闭注释窗」的全局监听立刻关掉
+        ev.stopPropagation();
+        const n = (a.id || "").replace("link", "");
+        const src = document.getElementById("note" + n);
+        if (!src) return;
+        showNote(src.innerHTML, ev.clientX, ev.clientY);
+      });
+    });
   }
   document.addEventListener("click", ev => {
     const pop = $("#notediv");
@@ -785,7 +1030,8 @@
 
   /* ---------------- 未实装功能提示 ---------------- */
   function viewNotice() {
-    app().innerHTML = topBar() +
+    // 提示页不是阅读页，不带头部的经号/检索栏，只留「首頁」返回
+    app().innerHTML = '<div class="titlebar"><a href="#/">首 頁</a></div>' +
       `<div class="cat notice">
         <h1>此功能未實裝</h1>
         <p>本離線版未包含這項功能。</p>
@@ -793,7 +1039,6 @@
         <p class="url"><a href="https://agama.buddhason.org/" target="_blank" rel="noopener">https://agama.buddhason.org/</a></p>
         <p class="tip">原站需要聯網；本離線版不會主動連接網路。</p>
       </div>`;
-    bindTop();
     document.title = "功能未實裝 · 莊春江讀經站";
   }
 
@@ -927,19 +1172,22 @@
     document.title = "檢索：" + q;
   }
 
-  /* ---------------- 简繁开关 ---------------- */
+  /* ---------------- 简繁开关（顶栏右侧） ---------------- */
   function applyLangLabel() {
-    const a = $("#langtoggle");
-    if (!a) return;
-    a.textContent = S.lang === "simp" ? "繁體" : "简体";
-    a.onclick = ev => {
-      ev.preventDefault();
-      S.lang = S.lang === "simp" ? "trad" : "simp";
-      try { localStorage.setItem("agama_lang", S.lang); } catch (e) { }
-      applyLangLabel();
-      route();
-    };
+    document.querySelectorAll("#langtoggle").forEach(a => {
+      a.textContent = S.lang === "simp" ? "繁體" : "简体";
+    });
   }
+  // 顶栏每次翻页都重绘，用事件委托绑一次即可
+  document.addEventListener("click", ev => {
+    const a = ev.target.closest && ev.target.closest("#langtoggle");
+    if (!a) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    S.lang = S.lang === "simp" ? "trad" : "simp";
+    try { localStorage.setItem("agama_lang", S.lang); } catch (e) { }
+    route();
+  });
 
   /* ---------------- 启动 ---------------- */
   window.addEventListener("DOMContentLoaded", () => {

@@ -27,6 +27,9 @@ CAT_CODES = {"SA", "SN", "MA", "MN", "DA", "DN", "AA", "AN", "ZA",
 PAGE_IDS = set(pages)
 BOOK_IDS = set(books)
 DOC_IDS = set(docs)
+# 栏目 index 里引用、但没被抽取进 pages/docs 的页面（如 SA/Sb.htm「主題索引」）。
+# 以前这些链接会被 resolve() 判定为「目标不存在」而删掉，界面上就成了死链。
+EXTRA_IDS = set()
 # 原站提取时漏掉的下載页（含 7 本 PDF 链接）
 for _extra in ("le/le1",):
     _p = os.path.join(SRC, _extra + ".htm")
@@ -91,6 +94,9 @@ def resolve(href, base):
         return "#/p/" + base_no
     if base_no in DOC_IDS:
         return "#/d/" + base_no
+    if base_no in EXTRA_IDS:
+        # 作为静态页随 toc 发布，路由与参考页一致
+        return "#/p/" + base_no
     return None
 
 def extract_html(raw):
@@ -220,6 +226,21 @@ def key_sort(k):
         return (9, [])
 
 cats = []
+# 先扫一遍栏目 index，把「被引用但没入库」的页面收进 EXTRA_IDS（如 SA/Sb.htm 主題索引）
+for _code in sorted(CAT_CODES):
+    _p = os.path.join(SRC, _code, "index.htm")
+    if not os.path.exists(_p):
+        continue
+    _raw = io.open(_p, encoding="utf-8", errors="replace").read()
+    for _m in re.finditer(r'href="([^"#?]+\.htm)"', _raw, re.I):
+        _rel = posixpath.normpath(posixpath.join(_code, _m.group(1)))
+        _fid = _rel[:-4] if _rel.endswith(".htm") else _rel
+        # 注意：PAGE_IDS 的键带 .htm，BOOK_IDS/DOC_IDS 不带
+        if _rel in PAGE_IDS or _fid in BOOK_IDS or _fid in DOC_IDS or _fid in EXTRA_IDS:
+            continue
+        if os.path.exists(os.path.join(SRC, _rel.replace("/", os.sep))):
+            EXTRA_IDS.add(_fid)
+print("EXTRA_IDS:", len(EXTRA_IDS), sorted(EXTRA_IDS)[:10])
 for code in ORDER:
     items = []
     if code == "OTHER" or any(k.split(".")[0] == code for k in corpus):
@@ -320,6 +341,15 @@ for bid in sorted(BOOK_IDS):
         continue
     base = posixpath.dirname(bid)
     static[bid] = clean_page(io.open(p, encoding="utf-8", errors="replace").read(), base)
+
+# 栏目页引用、但只在源镜像里存在的小页面（Sb.htm 等），随 toc 一起发
+for eid in sorted(EXTRA_IDS):
+    if eid in static:
+        continue
+    p = os.path.join(SRC, eid + ".htm")
+    if os.path.exists(p):
+        static[eid] = clean_page(io.open(p, encoding="utf-8", errors="replace").read(),
+                                 posixpath.dirname(eid))
 
 toc = {"v": 1, "home": home_page, "cats": cats, "books": book_list, "docs": doc_list, "static": static}
 buf = io.BytesIO()

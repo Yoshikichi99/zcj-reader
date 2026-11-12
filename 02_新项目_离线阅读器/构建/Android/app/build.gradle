@@ -1,0 +1,92 @@
+plugins {
+    id 'com.android.application'
+}
+
+// 路径：本工程在 工作区/02_新项目_离线阅读器/构建/Android，
+// 所以仓库根的 .tools 要往上四级。
+def wsRoot = rootProject.projectDir.toPath().resolve("../../../..").normalize().toFile()
+def ksDir = new File(wsRoot, ".tools/android/keystore")
+def ksPropsFile = new File(ksDir, "keystore.properties")
+def ksProps = new Properties()
+def hasKey = ksPropsFile.exists()
+if (hasKey) {
+    // 必须按 UTF-8 读，默认 load(InputStream) 是 ISO-8859-1，中文密码会坏
+    ksPropsFile.withReader("UTF-8") { ksProps.load(it) }
+}
+
+android {
+    namespace 'io.github.yoshikichi99.zcjreader'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "io.github.yoshikichi99.zcjreader"
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName "1.0.0"
+    }
+
+    signingConfigs {
+        if (hasKey) {
+            release {
+                storeFile new File(ksDir, ksProps.getProperty("storeFile"))
+                storePassword ksProps.getProperty("storePassword")
+                keyAlias ksProps.getProperty("keyAlias")
+                keyPassword ksProps.getProperty("keyPassword")
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            if (hasKey) {
+                signingConfig signingConfigs.release
+            }
+        }
+        debug {
+            // 调试包也用正式证书，方便 adb install -r 覆盖已装版本、并开启 WebView 调试
+            if (hasKey) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // 数据文件（原名 *.json.gz）在打包前改名成 *.gz.bin：
+    // AGP 的 AssetItem.shouldBeUnGzipped() 会按 ".gz" 后缀自动解压 assets，
+    // 不改名的话 19 MB 的 pali.json 会原样进 APK（实测 15.34 MB）。
+    // 改名后内容是原样的 gzip 字节，前端 fetch 后用 DecompressionStream 解压，无需改 JS。
+    androidResources {
+        noCompress += ["bin"]
+    }
+
+    lint {
+        abortOnError false
+    }
+}
+
+// ---- 把前端 proto 原样同步成 assets ----
+// 排除：开发用 _*.js 测试脚本、无任何页面引用的 12 张图（省 0.16 MB）。
+def protoDir = new File(wsRoot, "工作区/02_新项目_离线阅读器/前端/proto")
+def genAssets = layout.buildDirectory.dir("gen/assets")
+
+tasks.register("syncAssets", Sync) {
+    from(protoDir) {
+        exclude "_*.js"
+        exclude "assets/*_title.*"     // 10 张旧命名的重复图
+        exclude "assets/DN16.jpg"      // 未被引用
+        exclude "assets/*new.jpg"      // 一张坏图（无法解码）
+        // 见上方说明：躲开 AGP 的 .gz 自动解压
+        rename { String name -> name.endsWith(".gz") ? name + ".bin" : name }
+    }
+    into genAssets
+}
+
+android.sourceSets.main.assets.srcDirs += genAssets.get().asFile
+tasks.named("preBuild").configure { dependsOn "syncAssets" }
