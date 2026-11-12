@@ -253,6 +253,8 @@
           <tr><th>程式授權</th><td><strong>MIT</strong>（抽取腳本、前端、Windows 殼）<br>
               <span class="dim">可自由使用、修改、商用與再散布，保留版權聲明即可。</span></td></tr>
           <tr><th>文件授權</th><td><a href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" target="_blank" rel="noopener">創用 CC 姓名標示 4.0 國際</a></td></tr>
+          <tr><th>專案倉庫</th><td><a href="https://github.com/Yoshikichi99/zcj-reader" target="_blank" rel="noopener">github.com/Yoshikichi99/zcj-reader</a><br>
+              <span class="dim">抽取與校驗報告在「驗證」目錄下；授權全文見 LICENSE 系列檔案。</span></td></tr>
         </table>
         <p>內容與派生資料之所以不能跟著程式一起放寬，是因為版權屬於原作者、家屬授權為
            CC BY-NC-SA 4.0，其中「非商業性」與「相同方式分享」不能被更寬鬆的條款替代。</p>
