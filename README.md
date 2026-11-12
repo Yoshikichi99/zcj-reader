@@ -47,8 +47,14 @@ cd 02_新项目_离线阅读器\构建\Windows
 
 ## 下载（Release）
 
-- [v1.0 · 庄春江工作站离线版（Windows）](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0)
-  —— 单文件 exe（含使用说明）、三份 LICENSE 与声明
+两个平台**分开打包、分开发布**：
+
+| 平台 | Release | 内容 |
+|---|---|---|
+| **Android** | [v1.0.0-android](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0.0-android) | `zcj-reader-android-v1.0.0.zip`：APK（12.96 MB）+ 使用说明；另附 LICENSE / 声明 |
+| **Windows** | [v1.0.0-windows](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0.0-windows) | `zcj-reader-windows-v1.0.0.zip`：单文件 exe（14.10 MB）+ 两份使用说明 + 授權說明；另附 LICENSE / 声明 |
+
+> 旧版 Windows 发布仍在 [v1.0](https://github.com/Yoshikichi99/zcj-reader/releases/tag/v1.0)。
 
 ## 验证原型
 
