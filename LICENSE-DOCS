@@ -1,0 +1,27 @@
+# 文档许可 · CC BY 4.0
+
+本文件覆盖**本项目自写的说明文档**，不覆盖经文内容（见 `LICENSE-CONTENT`）
+或软件代码（见 `LICENSE`）。
+
+## 适用范围
+
+- `README.md`、`声明.md`、`目录说明.md`、`AI须知.md`、`GitHub使用指引.md`
+- `02_新项目_离线阅读器/文档/`（项目总览、更新日志、授权依据说明、PDF 对照清单）
+- `02_新项目_离线阅读器/验证/*.md`（校验报告）
+
+## 授权
+
+© 2026 Zhuran（Yoshikichi99）
+
+采用「创用 CC 姓名标示 4.0 国际」授权条款释出
+（Creative Commons Attribution 4.0 International）。
+
+- 条款全文：<https://creativecommons.org/licenses/by/4.0/legalcode>
+- 中文说明：<https://creativecommons.org/licenses/by/4.0/deed.zh-hant>
+
+可以自由复制、改作、再分发（含商业用途），只需保留署名与许可链接。
+
+## 注意
+
+文档中引用或转录的经文片段、页脚声明等，其著作权仍属原作者，
+按 `LICENSE-CONTENT` 的 CC BY-NC-SA 4.0 处理，不因收录在文档中而改变。
